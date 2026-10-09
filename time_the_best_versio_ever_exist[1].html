@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time88</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --primary-color: #00ff41;
+            --primary-rgb: 0, 255, 65;
+            --text-highlight: #ffffff;
+        }
+
+        body.blue-theme {
+            --primary-color: #00d4ff;
+            --primary-rgb: 0, 212, 255;
+            --text-highlight: #e0f7ff;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #121212;
+            background-image:
+                linear-gradient(rgba(var(--primary-rgb), 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(var(--primary-rgb), 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--primary-color);
+            user-select: none;
+            transition: background-image 0.3s ease, color 0.3s ease;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
+
+        #ui-container {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            background: rgba(18, 18, 18, 0.85);
+            border: 2px solid var(--primary-color);
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.2);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .ui-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+        }
+
+        .ui-row:last-child { margin-bottom: 0; }
+
+        .bracket {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--primary-color);
+            margin-right: 15px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        .label { width: 120px; flex-shrink: 0; }
+
+        #selected-city, #time-display {
+            color: var(--text-highlight);
+            text-shadow: 0 0 5px rgba(var(--primary-rgb), 0.8);
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        #time-display { font-size: 1.5rem; }
+
+        #search-input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--primary-color);
+            color: var(--text-highlight);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            width: 100%;
+            outline: none;
+            padding: 5px 0;
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+
+        #search-input::placeholder {
+            color: var(--primary-color);
+            opacity: 0.4;
+            letter-spacing: 2px;
+        }
+
+        #search-input:focus { border-bottom: 2px solid var(--text-highlight); }
+
+        #site-header {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px rgba(var(--primary-rgb), 0.5);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        #copyright {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            font-size: 0.8rem;
+            opacity: 0.6;
+            z-index: 10;
+            letter-spacing: 1px;
+            pointer-events: none;
+        }
+
+        #theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(18, 18, 18, 0.8);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-family: 'Share Tech Mono', monospace;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            z-index: 10;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        #theme-toggle:hover {
+            background: var(--primary-color);
+            color: #121212;
+            box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5);
+        }
+
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            z-index: 20;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        #instructions {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            opacity: 0.7;
+            text-align: center;
+            pointer-events: none;
+            z-index: 10;
+            line-height: 1.6;
+        }
+
+        #hand-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(18, 18, 18, 0.8);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-family: 'Share Tech Mono', monospace;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            z-index: 1001;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        #hand-toggle:hover {
+            background: var(--primary-color);
+            color: #121212;
+            box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5);
+        }
+
+        #demo-toggle {
+            position: absolute;
+            top: 20px;
+            left: 180px;
+            background: rgba(18, 18, 18, 0.8);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-family: 'Share Tech Mono', monospace;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            z-index: 1001;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        #demo-toggle:hover {
+            background: var(--primary-color);
+            color: #121212;
+            box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5);
+        }
+
+        #demo-toggle.active {
+            background: var(--primary-color);
+            color: #121212;
+            box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.8);
+        }
+
+        #cam {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            width: 160px;
+            border: 2px solid var(--primary-color);
+            transform: scaleX(-1);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, border-color 0.3s ease;
+            box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.3);
+        }
+
+        #cam.active { opacity: 0.75; }
+
+        #hand-cursor {
+            position: fixed;
+            width: 36px;
+            height: 36px;
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.6);
+            transition: width 0.1s ease, height 0.1s ease, background 0.1s ease;
+        }
+
+        #hand-cursor.pinching {
+            width: 20px;
+            height: 20px;
+            background: rgba(var(--primary-rgb), 0.5);
+        }
+
+        #gesture-guide {
+            position: absolute;
+            top: 70px;
+            left: 20px;
+            background: rgba(18, 18, 18, 0.92);
+            border: 2px solid var(--primary-color);
+            padding: 12px 15px;
+            font-size: 0.78rem;
+            letter-spacing: 1px;
+            z-index: 1001;
+            display: none;
+            max-width: 260px;
+            line-height: 1.6;
+            box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.2);
+        }
+
+        #gesture-guide.active { display: block; }
+
+        #gesture-guide .guide-title {
+            font-size: 0.88rem;
+            color: var(--text-highlight);
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px rgba(var(--primary-rgb), 0.8);
+        }
+
+        #gesture-guide .guide-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            opacity: 0.85;
+        }
+
+        #gesture-guide .guide-icon {
+            display: inline-block;
+            width: 42px;
+            font-size: 0.95rem;
+            color: var(--text-highlight);
+        }
+
+        #gesture-guide .guide-divider {
+            height: 1px;
+            background: var(--primary-color);
+            opacity: 0.3;
+            margin: 10px 0;
+        }
+
+        #gesture-guide .guide-subtitle {
+            font-size: 0.72rem;
+            opacity: 0.7;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .gesture-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .gesture-tile {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 7px;
+            border: 1px solid rgba(var(--primary-rgb), 0.25);
+            border-radius: 3px;
+            background: rgba(var(--primary-rgb), 0.03);
+            transition: all 0.2s ease;
+            cursor: default;
+        }
+
+        .gesture-tile.active {
+            border-color: var(--primary-color);
+            background: rgba(var(--primary-rgb), 0.15);
+            box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.5);
+        }
+
+        .gesture-tile .emoji {
+            font-size: 1.3rem;
+            line-height: 1;
+            filter: grayscale(0.4);
+            transition: filter 0.2s ease;
+        }
+
+        .gesture-tile.active .emoji {
+            filter: grayscale(0) drop-shadow(0 0 6px rgba(var(--primary-rgb), 0.9));
+        }
+
+        .gesture-tile .gt-label {
+            font-size: 0.62rem;
+            letter-spacing: 0.5px;
+            line-height: 1.25;
+            opacity: 0.85;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.18); }
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(-14deg); }
+            75% { transform: rotate(14deg); }
+        }
+
+        @keyframes floatUp {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        @keyframes floatDown {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(6px); }
+        }
+
+        .emoji-anim-fist { animation: pulse 1.6s ease-in-out infinite; display: inline-block; }
+        .emoji-anim-victory { animation: wiggle 1.5s ease-in-out infinite; display: inline-block; }
+        .emoji-anim-up { animation: floatUp 1.6s ease-in-out infinite; display: inline-block; }
+        .emoji-anim-down { animation: floatDown 1.6s ease-in-out infinite; display: inline-block; }
+
+        #speed-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #speed-row .speed-label {
+            font-size: 0.72rem;
+            opacity: 0.85;
+            letter-spacing: 1px;
+            flex-shrink: 0;
+        }
+
+        #speed-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            background: rgba(var(--primary-rgb), 0.25);
+            outline: none;
+            border-radius: 2px;
+            cursor: pointer;
+            min-width: 0;
+        }
+
+        #speed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 6px rgba(var(--primary-rgb), 0.8);
+        }
+
+        #speed-slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 6px rgba(var(--primary-rgb), 0.8);
+        }
+
+        #speed-value {
+            color: var(--text-highlight);
+            font-size: 0.72rem;
+            min-width: 34px;
+            text-align: right;
+            text-shadow: 0 0 5px rgba(var(--primary-rgb), 0.7);
+            flex-shrink: 0;
+        }
+
+        #demo-badge {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(var(--primary-rgb), 0.15);
+            border: 1px solid var(--primary-color);
+            color: var(--text-highlight);
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            z-index: 11;
+            display: none;
+            box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.5);
+            text-shadow: 0 0 5px rgba(var(--primary-rgb), 0.9);
+        }
+
+        #demo-badge.active { display: block; }
+
+        #demo-badge::before {
+            content: "● ";
+            animation: blink 1s infinite;
+        }
+
+        #privacy-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #privacy-overlay.active { display: flex; }
+
+        #privacy-card {
+            background: #121212;
+            border: 2px solid var(--primary-color);
+            padding: 25px 25px 20px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.3);
+            letter-spacing: 1px;
+            line-height: 1.7;
+            font-size: 0.9rem;
+        }
+
+        #privacy-card h2 {
+            margin: 0 0 15px 0;
+            font-size: 1.1rem;
+            color: var(--text-highlight);
+            letter-spacing: 3px;
+            text-shadow: 0 0 8px rgba(var(--primary-rgb), 0.6);
+        }
+
+        #privacy-card ul {
+            margin: 0 0 18px 0;
+            padding-left: 20px;
+        }
+
+        #privacy-card li {
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        #privacy-card .highlight {
+            color: var(--text-highlight);
+            text-shadow: 0 0 5px rgba(var(--primary-rgb), 0.7);
+        }
+
+        #privacy-card button {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-family: 'Share Tech Mono', monospace;
+            padding: 10px 25px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        #privacy-card button:hover {
+            background: var(--primary-color);
+            color: #121212;
+            box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5);
+        }
+
+        @media (max-width: 700px) {
+            #site-header { font-size: 1.3rem; letter-spacing: 3px; }
+            #ui-container { bottom: 30px; padding: 12px; }
+            .ui-row { font-size: 0.95rem; }
+            .label { width: 85px; font-size: 0.8rem; }
+            #time-display { font-size: 1.15rem; }
+            #search-input { font-size: 0.9rem; }
+            #instructions { font-size: 0.68rem; top: 55px; padding: 0 12px; }
+            #theme-toggle { font-size: 0.65rem; padding: 5px 8px; top: 12px; right: 12px; }
+            #hand-toggle { font-size: 0.65rem; padding: 5px 8px; top: 12px; left: 12px; }
+            #demo-toggle { font-size: 0.65rem; padding: 5px 8px; top: 12px; left: 110px; }
+            #gesture-guide { font-size: 0.68rem; max-width: 200px; padding: 9px 11px; top: 55px; left: 12px; }
+            #gesture-guide .guide-icon { width: 32px; }
+            .gesture-tile .emoji { font-size: 1.1rem; }
+            .gesture-tile .gt-label { font-size: 0.55rem; }
+            #cam { width: 100px; top: 48px; right: 12px; }
+            #demo-badge { font-size: 0.65rem; padding: 3px 9px; top: 48px; }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+    <div id="site-header">TIME88</div>
+    <button id="theme-toggle">BLUE THEME</button>
+    <button id="hand-toggle">HAND: OFF</button>
+    <button id="demo-toggle">DEMO</button>
+
+    <div id="demo-badge">DEMO TOUR</div>
+
+    <div id="gesture-guide">
+        <div class="guide-title">GESTURE GUIDE</div>
+
+        <div class="guide-row">
+            <span class="guide-icon">[+]</span>
+            <span>Move open hand to rotate</span>
+        </div>
+        <div class="guide-row">
+            <span class="guide-icon">[o]</span>
+            <span>Pinch to select a city</span>
+        </div>
+
+        <div class="guide-divider"></div>
+        <div class="guide-subtitle">EXTRA GESTURES</div>
+
+        <div class="gesture-grid">
+            <div class="gesture-tile" data-gesture="VICTORY">
+                <span class="emoji emoji-anim-victory">✌️</span>
+                <span class="gt-label">Reset view</span>
+            </div>
+            <div class="gesture-tile" data-gesture="FIST">
+                <span class="emoji emoji-anim-fist">✊</span>
+                <span class="gt-label">Auto-spin on/off</span>
+            </div>
+            <div class="gesture-tile" data-gesture="THUMBS_UP">
+                <span class="emoji emoji-anim-up">👍</span>
+                <span class="gt-label">Zoom in</span>
+            </div>
+            <div class="gesture-tile" data-gesture="THUMBS_DOWN">
+                <span class="emoji emoji-anim-down">👎</span>
+                <span class="gt-label">Zoom out</span>
+            </div>
+        </div>
+
+        <div id="speed-row">
+            <span class="speed-label">SPEED</span>
+            <input type="range" id="speed-slider" min="0.4" max="3" step="0.1" value="1">
+            <span id="speed-value">1.0x</span>
+        </div>
+    </div>
+
+    <div id="copyright">mohamed005cheikh@gmail.com | by MC88</div>
+
+    <div id="instructions">
+        DRAG / MOVE HAND TO ROTATE<br>CLICK OR PINCH TO SELECT
+    </div>
+    <div id="loading">INITIALIZING GLOBE...</div>
+
+    <div id="canvas-container"></div>
+
+    <video id="cam" autoplay playsinline muted></video>
+    <div id="hand-cursor"></div>
+
+    <div id="ui-container">
+        <div class="ui-row">
+            <div class="bracket"></div>
+            <div class="label">SEARCH:</div>
+            <input type="text" id="search-input" placeholder="TYPE CAPITAL NAME & PRESS ENTER..." autocomplete="off">
+        </div>
+        <div class="ui-row">
+            <div class="bracket"></div>
+            <div class="label">EARTH:</div>
+            <div id="selected-city">SELECT A CAPITAL</div>
+        </div>
+        <div class="ui-row">
+            <div class="bracket"></div>
+            <div class="label">TIME:</div>
+            <div id="time-display">--:--:--</div>
+        </div>
+    </div>
+
+    <div id="privacy-overlay">
+        <div id="privacy-card">
+            <h2>YOUR PRIVACY</h2>
+            <ul>
+                <li>Your camera is used <span class="highlight">only on your device</span> to detect hand gestures.</li>
+                <li><span class="highlight">No images are recorded, stored, or sent</span> anywhere.</li>
+                <li>This site has <span class="highlight">no backend server</span>. Everything runs inside your browser.</li>
+                <li>The source code is <span class="highlight">open and readable</span>. You can verify it yourself by viewing the page source.</li>
+            </ul>
+            <button id="privacy-ok">GOT IT</button>
+        </div>
+    </div>
+
+    <script>
+        // List of world capitals with latitude, longitude and timezone
+        const capitalsData = [
+            ["Kabul", 34.5553, 69.2075, "Asia/Kabul"],
+            ["Tirana", 41.3275, 19.8187, "Europe/Tirane"],
+            ["Algiers", 36.7538, 3.0588, "Africa/Algiers"],
+            ["Andorra la Vella", 42.5063, 1.5218, "Europe/Andorra"],
+            ["Luanda", -8.8390, 13.2894, "Africa/Luanda"],
+            ["Saint John's", 17.1274, -61.8468, "America/Antigua"],
+            ["Buenos Aires", -34.6037, -58.3816, "America/Argentina/Buenos_Aires"],
+            ["Yerevan", 40.1792, 44.4991, "Asia/Yerevan"],
+            ["Canberra", -35.2809, 149.1300, "Australia/Sydney"],
+            ["Vienna", 48.2082, 16.3738, "Europe/Vienna"],
+            ["Baku", 40.4093, 49.8671, "Asia/Baku"],
+            ["Nassau", 25.0480, -77.3554, "America/Nassau"],
+            ["Manama", 26.2285, 50.5860, "Asia/Bahrain"],
+            ["Dhaka", 23.8103, 90.4125, "Asia/Dhaka"],
+            ["Bridgetown", 13.1132, -59.5988, "America/Barbados"],
+            ["Minsk", 53.9006, 27.5590, "Europe/Minsk"],
+            ["Brussels", 50.8503, 4.3517, "Europe/Brussels"],
+            ["Belmopan", 17.2514, -88.7590, "America/Belize"],
+            ["Porto-Novo", 6.3703, 2.3912, "Africa/Porto-Novo"],
+            ["Thimphu", 27.4712, 89.6339, "Asia/Thimphu"],
+            ["Sucre", -19.0196, -65.2619, "America/La_Paz"],
+            ["Sarajevo", 43.8563, 18.4131, "Europe/Sarajevo"],
+            ["Gaborone", -24.6282, 25.9231, "Africa/Gaborone"],
+            ["Brasília", -15.7975, -47.8919, "America/Sao_Paulo"],
+            ["Bandar Seri Begawan", 4.9031, 114.9398, "Asia/Brunei"],
+            ["Sofia", 42.6977, 23.3219, "Europe/Sofia"],
+            ["Ouagadougou", 12.3714, -1.5197, "Africa/Ouagadougou"],
+            ["Gitega", -3.4271, 29.9246, "Africa/Bujumbura"],
+            ["Praia", 14.9331, -23.5133, "Atlantic/Cape_Verde"],
+            ["Phnom Penh", 11.5564, 104.9282, "Asia/Phnom_Penh"],
+            ["Yaoundé", 3.8480, 11.5021, "Africa/Douala"],
+            ["Ottawa", 45.4215, -75.6972, "America/Toronto"],
+            ["Bangui", 4.3947, 18.5582, "Africa/Bangui"],
+            ["N'Djamena", 12.1348, 15.0557, "Africa/Ndjamena"],
+            ["Santiago", -33.4489, -70.6693, "America/Santiago"],
+            ["Beijing", 39.9042, 116.4074, "Asia/Shanghai"],
+            ["Bogotá", 4.7110, -74.0721, "America/Bogota"],
+            ["Moroni", -11.7172, 43.2473, "Indian/Comoros"],
+            ["Kinshasa", -4.4419, 15.2663, "Africa/Kinshasa"],
+            ["Brazzaville", -4.2634, 15.2429, "Africa/Brazzaville"],
+            ["San José", 9.9281, -84.0907, "America/Costa_Rica"],
+            ["Zagreb", 45.8150, 15.9819, "Europe/Zagreb"],
+            ["Havana", 23.1136, -82.3666, "America/Havana"],
+            ["Nicosia", 35.1856, 33.3823, "Asia/Nicosia"],
+            ["Prague", 50.0755, 14.4378, "Europe/Prague"],
+            ["Copenhagen", 55.6761, 12.5683, "Europe/Copenhagen"],
+            ["Djibouti", 11.8251, 42.5903, "Africa/Djibouti"],
+            ["Roseau", 15.3092, -61.3794, "America/Dominica"],
+            ["Santo Domingo", 18.4861, -69.9312, "America/Santo_Domingo"],
+            ["Quito", -0.1807, -78.4678, "America/Guayaquil"],
+            ["Cairo", 30.0444, 31.2357, "Africa/Cairo"],
+            ["San Salvador", 13.6929, -89.2182, "America/El_Salvador"],
+            ["Malabo", 3.7523, 8.7742, "Africa/Malabo"],
+            ["Asmara", 15.3229, 38.9251, "Africa/Asmara"],
+            ["Tallinn", 59.4370, 24.7536, "Europe/Tallinn"],
+            ["Mbabane", -26.3054, 31.1367, "Africa/Mbabane"],
+            ["Addis Ababa", 9.0320, 38.7469, "Africa/Addis_Ababa"],
+            ["Suva", -18.1416, 178.4419, "Pacific/Fiji"],
+            ["Helsinki", 60.1699, 24.9384, "Europe/Helsinki"],
+            ["Paris", 48.8566, 2.3522, "Europe/Paris"],
+            ["Libreville", 0.4162, 9.4673, "Africa/Libreville"],
+            ["Banjul", 13.4549, -16.5790, "Africa/Banjul"],
+            ["Tbilisi", 41.7151, 44.8271, "Asia/Tbilisi"],
+            ["Berlin", 52.5200, 13.4050, "Europe/Berlin"],
+            ["Accra", 5.6037, -0.1870, "Africa/Accra"],
+            ["Athens", 37.9838, 23.7275, "Europe/Athens"],
+            ["St. George's", 12.0561, -61.7485, "America/Grenada"],
+            ["Guatemala City", 14.6349, -90.5069, "America/Guatemala"],
+            ["Conakry", 9.6412, -13.5784, "Africa/Conakry"],
+            ["Bissau", 11.8817, -15.6177, "Africa/Bissau"],
+            ["Georgetown", 6.8013, -58.1551, "America/Guyana"],
+            ["Port-au-Prince", 18.5944, -72.3074, "America/Port-au-Prince"],
+            ["Tegucigalpa", 14.0723, -87.1921, "America/Tegucigalpa"],
+            ["Budapest", 47.4979, 19.0402, "Europe/Budapest"],
+            ["Reykjavik", 64.1466, -21.9426, "Atlantic/Reykjavik"],
+            ["New Delhi", 28.6139, 77.2090, "Asia/Kolkata"],
+            ["Jakarta", -6.2088, 106.8456, "Asia/Jakarta"],
+            ["Tehran", 35.6892, 51.3890, "Asia/Tehran"],
+            ["Baghdad", 33.3152, 44.3661, "Asia/Baghdad"],
+            ["Dublin", 53.3498, -6.2603, "Europe/Dublin"],
+            ["Jerusalem", 31.7683, 35.2137, "Asia/Jerusalem"],
+            ["Rome", 41.9028, 12.4964, "Europe/Rome"],
+            ["Kingston", 17.9712, -76.7936, "America/Jamaica"],
+            ["Tokyo", 35.6762, 139.6503, "Asia/Tokyo"],
+            ["Amman", 31.9454, 35.9284, "Asia/Amman"],
+            ["Astana", 51.1694, 71.4491, "Asia/Almaty"],
+            ["Nairobi", -1.2921, 36.8219, "Africa/Nairobi"],
+            ["Tarawa", 1.4518, 173.0307, "Pacific/Tarawa"],
+            ["Kuwait City", 29.3759, 47.9774, "Asia/Kuwait"],
+            ["Bishkek", 42.8746, 74.5698, "Asia/Bishkek"],
+            ["Vientiane", 17.9757, 102.6331, "Asia/Vientiane"],
+            ["Riga", 56.9496, 24.1052, "Europe/Riga"],
+            ["Beirut", 33.8938, 35.5018, "Asia/Beirut"],
+            ["Maseru", -29.3632, 27.5144, "Africa/Maseru"],
+            ["Monrovia", 6.2907, -10.7605, "Africa/Monrovia"],
+            ["Tripoli", 32.8872, 13.1913, "Africa/Tripoli"],
+            ["Vaduz", 47.1410, 9.5209, "Europe/Vaduz"],
+            ["Vilnius", 54.6872, 25.2797, "Europe/Vilnius"],
+            ["Luxembourg", 49.8153, 6.1296, "Europe/Luxembourg"],
+            ["Antananarivo", -18.8792, 47.5079, "Indian/Antananarivo"],
+            ["Lilongwe", -13.9626, 33.7741, "Africa/Blantyre"],
+            ["Kuala Lumpur", 3.1390, 101.6869, "Asia/Kuala_Lumpur"],
+            ["Malé", 4.1755, 73.5093, "Indian/Maldives"],
+            ["Bamako", 12.6392, -8.0029, "Africa/Bamako"],
+            ["Valletta", 35.8989, 14.5146, "Europe/Malta"],
+            ["Majuro", 7.1164, 171.1858, "Pacific/Majuro"],
+            ["Nouakchott", 18.0735, -15.9582, "Africa/Nouakchott"],
+            ["Port Louis", -20.1609, 57.5012, "Indian/Mauritius"],
+            ["Mexico City", 19.4326, -99.1332, "America/Mexico_City"],
+            ["Palikir", 6.9248, 158.1611, "Pacific/Pohnpei"],
+            ["Chisinau", 47.0105, 28.8638, "Europe/Chisinau"],
+            ["Monaco", 43.7384, 7.4246, "Europe/Monaco"],
+            ["Ulaanbaatar", 47.8864, 106.9057, "Asia/Ulaanbaatar"],
+            ["Podgorica", 42.4304, 19.2594, "Europe/Podgorica"],
+            ["Rabat", 34.0209, -6.8416, "Africa/Casablanca"],
+            ["Maputo", -25.9692, 32.5732, "Africa/Maputo"],
+            ["Naypyidaw", 19.7633, 96.0785, "Asia/Yangon"],
+            ["Windhoek", -22.5609, 17.0658, "Africa/Windhoek"],
+            ["Yaren", -0.5477, 166.9209, "Pacific/Nauru"],
+            ["Kathmandu", 27.7172, 85.3240, "Asia/Kathmandu"],
+            ["Amsterdam", 52.3676, 4.9041, "Europe/Amsterdam"],
+            ["Wellington", -41.2865, 174.7762, "Pacific/Auckland"],
+            ["Managua", 12.1149, -86.2362, "America/Managua"],
+            ["Niamey", 13.5116, 2.1254, "Africa/Niamey"],
+            ["Abuja", 9.0765, 7.3986, "Africa/Lagos"],
+            ["Pyongyang", 39.0392, 125.7625, "Asia/Pyongyang"],
+            ["Skopje", 41.9973, 21.4280, "Europe/Skopje"],
+            ["Oslo", 59.9139, 10.7522, "Europe/Oslo"],
+            ["Muscat", 23.5880, 58.3829, "Asia/Muscat"],
+            ["Islamabad", 33.6844, 73.0479, "Asia/Karachi"],
+            ["Ngerulmud", 7.5006, 134.6242, "Pacific/Palau"],
+            ["Ramallah", 31.9038, 35.2034, "Asia/Hebron"],
+            ["Panama City", 8.9824, -79.5199, "America/Panama"],
+            ["Port Moresby", -9.4438, 147.1803, "Pacific/Port_Moresby"],
+            ["Asunción", -25.2637, -57.5759, "America/Asuncion"],
+            ["Lima", -12.0464, -77.0428, "America/Lima"],
+            ["Manila", 14.5995, 120.9842, "Asia/Manila"],
+            ["Warsaw", 52.2297, 21.0122, "Europe/Warsaw"],
+            ["Lisbon", 38.7223, -9.1393, "Europe/Lisbon"],
+            ["Doha", 25.2854, 51.5310, "Asia/Qatar"],
+            ["Bucharest", 44.4268, 26.1025, "Europe/Bucharest"],
+            ["Moscow", 55.7558, 37.6173, "Europe/Moscow"],
+            ["Kigali", -1.9441, 30.0619, "Africa/Kigali"],
+            ["Basseterre", 17.3026, -62.7177, "America/St_Kitts"],
+            ["Castries", 14.0101, -60.9875, "America/St_Lucia"],
+            ["Kingstown", 13.1600, -61.2248, "America/St_Vincent"],
+            ["Apia", -13.8506, -171.7513, "Pacific/Apia"],
+            ["San Marino", 43.9424, 12.4578, "Europe/San_Marino"],
+            ["São Tomé", 0.3365, 6.7306, "Africa/Sao_Tome"],
+            ["Riyadh", 24.7136, 46.6753, "Asia/Riyadh"],
+            ["Dakar", 14.7167, -17.4677, "Africa/Dakar"],
+            ["Belgrade", 44.7866, 20.4489, "Europe/Belgrade"],
+            ["Victoria", -4.6191, 55.4513, "Indian/Mahe"],
+            ["Freetown", 8.4657, -13.2317, "Africa/Freetown"],
+            ["Singapore", 1.3521, 103.8198, "Asia/Singapore"],
+            ["Bratislava", 48.1486, 17.1077, "Europe/Bratislava"],
+            ["Ljubljana", 46.0569, 14.5058, "Europe/Ljubljana"],
+            ["Honiara", -9.4456, 159.9729, "Pacific/Guadalcanal"],
+            ["Mogadishu", 2.0469, 45.3182, "Africa/Mogadishu"],
+            ["Pretoria", -25.7479, 28.2293, "Africa/Johannesburg"],
+            ["Seoul", 37.5665, 126.9780, "Asia/Seoul"],
+            ["Juba", 4.8594, 31.5713, "Africa/Juba"],
+            ["Madrid", 40.4168, -3.7038, "Europe/Madrid"],
+            ["Sri Jayawardenepura Kotte", 6.9271, 79.8612, "Asia/Colombo"],
+            ["Khartoum", 15.5007, 32.5599, "Africa/Khartoum"],
+            ["Paramaribo", 5.8520, -55.2038, "America/Paramaribo"],
+            ["Stockholm", 59.3293, 18.0686, "Europe/Stockholm"],
+            ["Bern", 46.9480, 7.4474, "Europe/Zurich"],
+            ["Damascus", 33.5138, 36.2765, "Asia/Damascus"],
+            ["Taipei", 25.0330, 121.5654, "Asia/Taipei"],
+            ["Dushanbe", 38.5598, 68.7870, "Asia/Dushanbe"],
+            ["Dodoma", -6.1630, 35.7516, "Africa/Dar_es_Salaam"],
+            ["Bangkok", 13.7563, 100.5018, "Asia/Bangkok"],
+            ["Dili", -8.5569, 125.5603, "Asia/Dili"],
+            ["Lomé", 6.1256, 1.2254, "Africa/Lome"],
+            ["Nuku'alofa", -21.1394, -175.2049, "Pacific/Tongatapu"],
+            ["Port of Spain", 10.6603, -61.5086, "America/Port_of_Spain"],
+            ["Tunis", 36.8065, 10.1815, "Africa/Tunis"],
+            ["Ankara", 39.9334, 32.8597, "Europe/Istanbul"],
+            ["Ashgabat", 37.9601, 58.3261, "Asia/Ashgabat"],
+            ["Funafuti", -8.5211, 179.1962, "Pacific/Funafuti"],
+            ["Kampala", 0.3476, 32.5825, "Africa/Kampala"],
+            ["Kyiv", 50.4501, 30.5234, "Europe/Kiev"],
+            ["Abu Dhabi", 24.4539, 54.3773, "Asia/Dubai"],
+            ["London", 51.5074, -0.1278, "Europe/London"],
+            ["Washington D.C.", 38.9072, -77.0369, "America/New_York"],
+            ["Montevideo", -34.9011, -56.1645, "America/Montevideo"],
+            ["Tashkent", 41.2995, 69.2401, "Asia/Tashkent"],
+            ["Port Vila", -17.7333, 168.3273, "Pacific/Efate"],
+            ["Vatican City", 41.9029, 12.4534, "Europe/Vatican"],
+            ["Caracas", 10.4806, -66.9036, "America/Caracas"],
+            ["Hanoi", 21.0285, 105.8542, "Asia/Ho_Chi_Minh"],
+            ["Sana'a", 15.3694, 44.1910, "Asia/Aden"],
+            ["Lusaka", -15.3875, 28.3228, "Africa/Lusaka"],
+            ["Harare", -17.8252, 31.0335, "Africa/Harare"]
+        ];
+
+        // Set up the 3D scene, camera and renderer
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const BASE_ZOOM = 280;
+        camera.position.z = BASE_ZOOM;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        const globeGroup = new THREE.Group();
+        scene.add(globeGroup);
+
+        const greenColor = 0x00ff41;
+
+        // Wireframe sphere for the globe
+        const globeRadius = 100;
+        const sphereGeo = new THREE.SphereGeometry(globeRadius, 36, 36);
+        const sphereMat = new THREE.MeshBasicMaterial({
+            color: greenColor,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.15
+        });
+        const globeMesh = new THREE.Mesh(sphereGeo, sphereMat);
+        globeGroup.add(globeMesh);
+
+        // Bounding box around the globe
+        const boxSize = 240;
+        const boxGeo = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
+        const boxEdges = new THREE.EdgesGeometry(boxGeo);
+        const boxLines = new THREE.LineSegments(
+            boxEdges,
+            new THREE.LineBasicMaterial({ color: greenColor, opacity: 0.3, transparent: true })
+        );
+        globeGroup.add(boxLines);
+
+        // Convert latitude and longitude to xyz on the sphere
+        function latLonToXYZ(lat, lon, radius) {
+            const phi = (90 - lat) * (Math.PI / 180);
+            const theta = (lon + 180) * (Math.PI / 180);
+            const x = -(radius * Math.sin(phi) * Math.cos(theta));
+            const y = (radius * Math.cos(phi));
+            const z = (radius * Math.sin(phi) * Math.sin(theta));
+            return { x, y, z };
+        }
+
+        // Add capital dots and invisible hit areas for clicks
+        const cityPoints = [];
+        const pointGeo = new THREE.SphereGeometry(1.5, 8, 8);
+        const pointMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        const hitAreaGeo = new THREE.SphereGeometry(4, 8, 8);
+        const hitAreaMat = new THREE.MeshBasicMaterial({ visible: false });
+
+        capitalsData.forEach((data) => {
+            const [name, lat, lon, tz] = data;
+            const pos = latLonToXYZ(lat, lon, globeRadius);
+
+            const dot = new THREE.Mesh(pointGeo, pointMat);
+            dot.position.set(pos.x, pos.y, pos.z);
+            globeGroup.add(dot);
+
+            const hit = new THREE.Mesh(hitAreaGeo, hitAreaMat);
+            hit.position.set(pos.x, pos.y, pos.z);
+            hit.userData = { name, tz };
+            globeGroup.add(hit);
+            cityPoints.push(hit);
+        });
+
+        document.getElementById('loading').style.display = 'none';
+
+        // Rotation state for the globe
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let clickStartPos = { x: 0, y: 0 };
+        let targetRotation = { x: 0.2, y: -0.5 };
+        let currentRotation = { x: 0.2, y: -0.5 };
+        let autoSpin = true;
+        let demoActive = false;
+
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        // Compute the rotation needed to bring a city to face the camera
+        function rotationToFaceCity(lat, lon) {
+            const pos = latLonToXYZ(lat, lon, 1);
+            const ry = Math.atan2(-pos.x, pos.z);
+            const zAfter = -pos.x * Math.sin(ry) + pos.z * Math.cos(ry);
+            const rx = Math.atan2(pos.y, zAfter);
+            return { x: rx, y: ry };
+        }
+
+        // Rotate the globe to look at the given city over time
+        function lookAtCity(lat, lon) {
+            const r = rotationToFaceCity(lat, lon);
+            targetRotation.x = Math.max(-Math.PI / 2 + 0.1, Math.min(Math.PI / 2 - 0.1, r.x));
+            let dy = r.y - targetRotation.y;
+            while (dy > Math.PI) dy -= 2 * Math.PI;
+            while (dy < -Math.PI) dy += 2 * Math.PI;
+            targetRotation.y += dy;
+        }
+
+        // Mouse drag handling
+        container.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+            clickStartPos = { x: e.clientX, y: e.clientY };
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const dx = e.clientX - previousMousePosition.x;
+                const dy = e.clientY - previousMousePosition.y;
+                targetRotation.y += dx * 0.005;
+                targetRotation.x += dy * 0.005;
+                targetRotation.x = Math.max(-Math.PI / 2 + 0.1, Math.min(Math.PI / 2 - 0.1, targetRotation.x));
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            }
+        });
+
+        window.addEventListener('mouseup', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            const moveDistance = Math.sqrt(
+                Math.pow(e.clientX - clickStartPos.x, 2) +
+                Math.pow(e.clientY - clickStartPos.y, 2)
+            );
+            if (moveDistance < 5) {
+                pickCityAt(e.clientX, e.clientY);
+            }
+        });
+
+        // Touch handling for mobile
+        container.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                isDragging = true;
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                clickStartPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (isDragging && e.touches.length === 1) {
+                const dx = e.touches[0].clientX - previousMousePosition.x;
+                const dy = e.touches[0].clientY - previousMousePosition.y;
+                targetRotation.y += dx * 0.005;
+                targetRotation.x += dy * 0.005;
+                targetRotation.x = Math.max(-Math.PI / 2 + 0.1, Math.min(Math.PI / 2 - 0.1, targetRotation.x));
+                previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }
+        });
+
+        window.addEventListener('touchend', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            const moveDistance = Math.sqrt(
+                Math.pow(e.changedTouches[0].clientX - clickStartPos.x, 2) +
+                Math.pow(e.changedTouches[0].clientY - clickStartPos.y, 2)
+            );
+            if (moveDistance < 5) {
+                pickCityAt(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+            }
+        });
+
+        // Raycast to find which city is under the given screen point
+        function pickCityAt(screenX, screenY) {
+            mouse.x = (screenX / window.innerWidth) * 2 - 1;
+            mouse.y = -(screenY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(cityPoints);
+            if (intersects.length > 0) {
+                const data = intersects[0].object.userData;
+                selectCity(data.name, data.tz);
+            }
+        }
+
+        // Clock logic
+        let activeTimezone = null;
+        const cityDisplay = document.getElementById('selected-city');
+        const timeDisplay = document.getElementById('time-display');
+        const searchInput = document.getElementById('search-input');
+
+        function selectCity(name, tz) {
+            activeTimezone = tz;
+            cityDisplay.textContent = name.toUpperCase();
+            updateTime();
+            if (document.activeElement !== searchInput) {
+                searchInput.value = name;
+            }
+        }
+
+        function updateTime() {
+            if (!activeTimezone) return;
+            try {
+                const formatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: activeTimezone,
+                    hour12: false,
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                timeDisplay.textContent = formatter.format(new Date());
+            } catch (e) {
+                timeDisplay.textContent = "ERR";
+            }
+        }
+
+        setInterval(updateTime, 1000);
+
+        // Search box handling
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter') return;
+            const query = searchInput.value.trim().toLowerCase();
+            if (!query) return;
+
+            let match = capitalsData.find(c => c[0].toLowerCase() === query);
+            if (!match) match = capitalsData.find(c => c[0].toLowerCase().includes(query));
+
+            if (match) {
+                selectCity(match[0], match[3]);
+                searchInput.blur();
+            } else {
+                cityDisplay.textContent = "NOT FOUND";
+                timeDisplay.textContent = "--:--:--";
+                activeTimezone = null;
+            }
+        });
+
+        searchInput.addEventListener('focus', () => {
+            searchInput.value = '';
+            cityDisplay.textContent = "SELECT A CAPITAL";
+            timeDisplay.textContent = "--:--:--";
+            activeTimezone = null;
+        });
+
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('blue-theme');
+            const isBlue = document.body.classList.contains('blue-theme');
+            themeToggle.textContent = isBlue ? 'GREEN THEME' : 'BLUE THEME';
+            const newColor = isBlue ? 0x00d4ff : 0x00ff41;
+            sphereMat.color.setHex(newColor);
+            boxLines.material.color.setHex(newColor);
+        });
+
+        // Demo tour that cycles through famous cities
+        const demoButton = document.getElementById('demo-toggle');
+        const demoBadge = document.getElementById('demo-badge');
+
+        const demoTour = [
+            'Paris', 'Tokyo', 'New York', 'Cairo', 'Rio de Janeiro',
+            'Sydney', 'Dubai', 'Moscow', 'London', 'Nouakchott'
+        ];
+        const DEMO_HOLD_MS = 4200;
+
+        let demoTimer = null;
+        let demoIndex = 0;
+
+        function stopDemo() {
+            demoActive = false;
+            clearTimeout(demoTimer);
+            demoButton.classList.remove('active');
+            demoBadge.classList.remove('active');
+            demoButton.textContent = 'DEMO';
+        }
+
+        function runDemoStep() {
+            if (!demoActive) return;
+            const name = demoTour[demoIndex];
+            const match = capitalsData.find(c => c[0] === name);
+            if (match) {
+                selectCity(match[0], match[3]);
+                lookAtCity(match[1], match[2]);
+            }
+            demoIndex = (demoIndex + 1) % demoTour.length;
+            demoTimer = setTimeout(runDemoStep, DEMO_HOLD_MS);
+        }
+
+        function startDemo() {
+            stopHand();
+            demoActive = true;
+            demoIndex = 0;
+            camera.position.z = BASE_ZOOM;
+            demoButton.classList.add('active');
+            demoButton.textContent = 'STOP';
+            demoBadge.classList.add('active');
+            runDemoStep();
+        }
+
+        demoButton.addEventListener('click', () => {
+            if (demoActive) stopDemo();
+            else startDemo();
+        });
+
+        // Hand tracking with MediaPipe
+        const handToggleBtn = document.getElementById('hand-toggle');
+        const gestureGuide = document.getElementById('gesture-guide');
+        const privacyOverlay = document.getElementById('privacy-overlay');
+        const privacyOk = document.getElementById('privacy-ok');
+        const camVideo = document.getElementById('cam');
+        const handCursor = document.getElementById('hand-cursor');
+        const speedSlider = document.getElementById('speed-slider');
+        const speedValueLabel = document.getElementById('speed-value');
+        const gestureTiles = document.querySelectorAll('.gesture-tile');
+
+        let handEnabled = false;
+        let handReady = false;
+        let handActive = false;
+        let lastVideoTime = -1;
+        let handLandmarkerRef = null;
+
+        // Smoothing and motion values
+        let smoothedPalmX = null;
+        let smoothedPalmY = null;
+        let prevPalmX = null;
+        let prevPalmY = null;
+        let isPinching = false;
+        let lastPinchTime = 0;
+
+        // Per gesture cooldown tracking
+        const gestureLastTime = {};
+        const gestureHoldCounter = {};
+
+        const BASE_ROTATION_SPEED = 2.8;
+        const PALM_SMOOTHING = 0.22;
+        const DEAD_ZONE = 0.004;
+        const PINCH_THRESHOLD = 0.35;
+        const PINCH_COOLDOWN_MS = 800;
+        const GESTURE_STABLE_FRAMES = 3;
+        const VICTORY_COOLDOWN_MS = 2500;
+        const FIST_COOLDOWN_MS = 1500;
+
+        const privacyShownKey = 'time88_privacy_shown';
+        const speedStorageKey = 'time88_speed_multiplier';
+
+        // Load saved speed setting from previous session
+        let speedMultiplier = parseFloat(localStorage.getItem(speedStorageKey)) || 1;
+        if (isNaN(speedMultiplier) || speedMultiplier < 0.4 || speedMultiplier > 3) {
+            speedMultiplier = 1;
+        }
+        speedSlider.value = speedMultiplier;
+        speedValueLabel.textContent = speedMultiplier.toFixed(1) + 'x';
+
+        speedSlider.addEventListener('input', () => {
+            speedMultiplier = parseFloat(speedSlider.value);
+            speedValueLabel.textContent = speedMultiplier.toFixed(1) + 'x';
+            localStorage.setItem(speedStorageKey, speedMultiplier.toString());
+        });
+
+        function showPrivacyIfNeeded() {
+            if (!localStorage.getItem(privacyShownKey)) {
+                privacyOverlay.classList.add('active');
+            }
+        }
+
+        privacyOk.addEventListener('click', () => {
+            localStorage.setItem(privacyShownKey, '1');
+            privacyOverlay.classList.remove('active');
+        });
+
+        async function initHandTracking() {
+            const { HandLandmarker, FilesetResolver } =
+                await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/+esm');
+
+            const vision = await FilesetResolver.forVisionTasks(
+                'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm'
+            );
+
+            handLandmarkerRef = await HandLandmarker.createFromOptions(vision, {
+                baseOptions: {
+                    modelAssetPath:
+                        'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+                    delegate: 'GPU'
+                },
+                runningMode: 'VIDEO',
+                numHands: 1
+            });
+
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { width: 640, height: 480 }
+            });
+            camVideo.srcObject = stream;
+            await camVideo.play();
+
+            handReady = true;
+            runHandLoop();
+        }
+
+        function runHandLoop() {
+            if (handEnabled && handReady && camVideo.readyState >= 2) {
+                if (camVideo.currentTime !== lastVideoTime) {
+                    lastVideoTime = camVideo.currentTime;
+                    const result = handLandmarkerRef.detectForVideo(camVideo, performance.now());
+                    if (result.landmarks && result.landmarks.length > 0) {
+                        processHand(result.landmarks[0]);
+                    } else {
+                        resetHandState();
+                    }
+                }
+            }
+            requestAnimationFrame(runHandLoop);
+        }
+
+        function resetHandState() {
+            handActive = false;
+            prevPalmX = null;
+            prevPalmY = null;
+            smoothedPalmX = null;
+            smoothedPalmY = null;
+            handCursor.style.display = 'none';
+            handCursor.classList.remove('pinching');
+            setActiveGesture(null);
+        }
+
+        // Check if a finger is folded toward the palm
+        function isFolded(hand, tipIdx, mcpIdx) {
+            const wrist = hand[0];
+            const tip = hand[tipIdx];
+            const mcp = hand[mcpIdx];
+            const tipDist = Math.hypot(tip.x - wrist.x, tip.y - wrist.y);
+            const mcpDist = Math.hypot(mcp.x - wrist.x, mcp.y - wrist.y);
+            return tipDist < mcpDist;
+        }
+
+        // Detect which gesture the hand is making
+        function detectGesture(hand, pinchingNow) {
+            if (pinchingNow) return 'PINCH';
+
+            const indexFold = isFolded(hand, 8, 5);
+            const middleFold = isFolded(hand, 12, 9);
+            const ringFold = isFolded(hand, 16, 13);
+            const pinkyFold = isFolded(hand, 20, 17);
+
+            const indexUp = !indexFold;
+            const middleUp = !middleFold;
+            const ringUp = !ringFold;
+            const pinkyUp = !pinkyFold;
+
+            const upCount = [indexUp, middleUp, ringUp, pinkyUp].filter(Boolean).length;
+
+            // Victory: index and middle up, ring and pinky folded
+            if (indexUp && middleUp && ringFold && pinkyFold) return 'VICTORY';
+
+            // Fist: all four fingers folded
+            if (upCount === 0) {
+                const thumbTip = hand[4];
+                const thumbMcp = hand[2];
+                const wrist = hand[0];
+                const thumbDx = thumbTip.x - thumbMcp.x;
+                const thumbDy = thumbTip.y - thumbMcp.y;
+
+                // If thumb is pointing clearly up or down, it is a thumbs gesture
+                if (Math.abs(thumbDy) > Math.abs(thumbDx) * 1.25) {
+                    if (thumbTip.y < wrist.y - 0.1) return 'THUMBS_UP';
+                    if (thumbTip.y > wrist.y + 0.1) return 'THUMBS_DOWN';
+                }
+                return 'FIST';
+            }
+
+            return null;
+        }
+
+        // Highlight the current gesture in the guide
+        function setActiveGesture(name) {
+            gestureTiles.forEach(tile => {
+                tile.classList.toggle('active', tile.dataset.gesture === name);
+            });
+        }
+
+        // Trigger an action when a gesture stays stable for a few frames
+        function gestureStable(name) {
+            if (!gestureHoldCounter[name]) gestureHoldCounter[name] = 0;
+            gestureHoldCounter[name]++;
+            return gestureHoldCounter[name] >= GESTURE_STABLE_FRAMES;
+        }
+
+        function clearGestureHolders(except) {
+            Object.keys(gestureHoldCounter).forEach(k => {
+                if (k !== except) gestureHoldCounter[k] = 0;
+            });
+        }
+
+        function processHand(hand) {
+            handActive = true;
+
+            const palm = hand[9];
+            const rawX = 1 - palm.x;
+            const rawY = palm.y;
+
+            if (smoothedPalmX === null) {
+                smoothedPalmX = rawX;
+                smoothedPalmY = rawY;
+            } else {
+                smoothedPalmX += (rawX - smoothedPalmX) * PALM_SMOOTHING;
+                smoothedPalmY += (rawY - smoothedPalmY) * PALM_SMOOTHING;
+            }
+
+            const indexTip = hand[8];
+            const cursorX = (1 - indexTip.x) * window.innerWidth;
+            const cursorY = indexTip.y * window.innerHeight;
+
+            const thumbTip = hand[4];
+            const dxp = indexTip.x - thumbTip.x;
+            const dyp = indexTip.y - thumbTip.y;
+            const dzp = (indexTip.z || 0) - (thumbTip.z || 0);
+            const pinchDist = Math.sqrt(dxp * dxp + dyp * dyp + dzp * dzp);
+
+            const wrist = hand[0];
+            const midMcp = hand[9];
+            const hx = wrist.x - midMcp.x;
+            const hy = wrist.y - midMcp.y;
+            const handSize = Math.sqrt(hx * hx + hy * hy) || 0.001;
+            const pinchRatio = pinchDist / handSize;
+            const pinchingNow = pinchRatio < PINCH_THRESHOLD;
+
+            const gesture = detectGesture(hand, pinchingNow);
+            setActiveGesture(gesture);
+            clearGestureHolders(gesture);
+
+            const now = performance.now();
+            const gLast = gestureLastTime[gesture] || 0;
+
+            // Reset view
+            if (gesture === 'VICTORY' && gestureStable('VICTORY') && now - gLast > VICTORY_COOLDOWN_MS) {
+                gestureLastTime.VICTORY = now;
+                targetRotation.x = 0.2;
+                targetRotation.y = -0.5;
+                currentRotation.x = 0.2;
+                currentRotation.y = -0.5;
+                camera.position.z = BASE_ZOOM;
+            }
+
+            // Toggle auto spin
+            if (gesture === 'FIST' && gestureStable('FIST') && now - gLast > FIST_COOLDOWN_MS) {
+                gestureLastTime.FIST = now;
+                autoSpin = !autoSpin;
+            }
+
+            // Zoom in while thumb is up
+            if (gesture === 'THUMBS_UP' && gestureStable('THUMBS_UP')) {
+                camera.position.z = Math.max(170, camera.position.z - 3);
+            }
+
+            // Zoom out while thumb is down
+            if (gesture === 'THUMBS_DOWN' && gestureStable('THUMBS_DOWN')) {
+                camera.position.z = Math.min(420, camera.position.z + 3);
+            }
+
+            // Rotate with palm motion, unless pinching or making a gesture
+            const rotationBlocked = pinchingNow || gesture !== null;
+            if (!rotationBlocked && prevPalmX !== null) {
+                const dx = smoothedPalmX - prevPalmX;
+                const dy = smoothedPalmY - prevPalmY;
+                const currentSpeed = BASE_ROTATION_SPEED * speedMultiplier;
+
+                if (Math.abs(dx) > DEAD_ZONE) {
+                    targetRotation.y += (dx - Math.sign(dx) * DEAD_ZONE) * currentSpeed;
+                }
+                if (Math.abs(dy) > DEAD_ZONE) {
+                    targetRotation.x += (dy - Math.sign(dy) * DEAD_ZONE) * currentSpeed;
+                }
+                targetRotation.x = Math.max(
+                    -Math.PI / 2 + 0.1,
+                    Math.min(Math.PI / 2 - 0.1, targetRotation.x)
+                );
+            }
+
+            prevPalmX = smoothedPalmX;
+            prevPalmY = smoothedPalmY;
+
+            // Cursor display and pinch feedback
+            handCursor.style.display = 'block';
+            handCursor.style.left = cursorX + 'px';
+            handCursor.style.top = cursorY + 'px';
+            if (pinchingNow) handCursor.classList.add('pinching');
+            else handCursor.classList.remove('pinching');
+
+            // Pinch selects the city the index finger points at
+            if (pinchingNow && !isPinching && now - lastPinchTime > PINCH_COOLDOWN_MS) {
+                isPinching = true;
+                lastPinchTime = now;
+
+                const ndcX = (cursorX / window.innerWidth) * 2 - 1;
+                const ndcY = -(cursorY / window.innerHeight) * 2 + 1;
+                mouse.set(ndcX, ndcY);
+                raycaster.setFromCamera(mouse, camera);
+
+                const intersects = raycaster.intersectObjects(cityPoints);
+                if (intersects.length > 0) {
+                    const data = intersects[0].object.userData;
+                    selectCity(data.name, data.tz);
+                    handCursor.style.width = '60px';
+                    handCursor.style.height = '60px';
+                    setTimeout(() => {
+                        handCursor.style.width = '20px';
+                        handCursor.style.height = '20px';
+                    }, 150);
+                }
+            }
+
+            if (!pinchingNow) isPinching = false;
+        }
+
+        function stopHand() {
+            if (!handEnabled) return;
+            handEnabled = false;
+            resetHandState();
+            camVideo.classList.remove('active');
+            gestureGuide.classList.remove('active');
+            handToggleBtn.textContent = 'HAND: OFF';
+        }
+
+        handToggleBtn.addEventListener('click', async () => {
+            if (!handEnabled) {
+                if (demoActive) stopDemo();
+                showPrivacyIfNeeded();
+                handToggleBtn.textContent = 'HAND: LOADING...';
+                try {
+                    if (!handReady) await initHandTracking();
+                    handEnabled = true;
+                    camVideo.classList.add('active');
+                    gestureGuide.classList.add('active');
+                    handToggleBtn.textContent = 'HAND: ON';
+                } catch (err) {
+                    console.error(err);
+                    handToggleBtn.textContent = 'HAND: ERR';
+                    handEnabled = false;
+                }
+            } else {
+                stopHand();
+            }
+        });
+
+        // Main animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            currentRotation.x += (targetRotation.x - currentRotation.x) * 0.1;
+            currentRotation.y += (targetRotation.y - currentRotation.y) * 0.1;
+            globeGroup.rotation.x = currentRotation.x;
+            globeGroup.rotation.y = currentRotation.y;
+
+            // Auto spin only when idle and enabled
+            if (!isDragging && !handActive && !demoActive && autoSpin) {
+                targetRotation.y += 0.0005;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>
