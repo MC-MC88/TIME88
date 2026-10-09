@@ -23,7 +23,7 @@
             margin: 0;
             overflow: hidden;
             background-color: #121212;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(var(--primary-rgb), 0.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(var(--primary-rgb), 0.05) 1px, transparent 1px);
             background-size: 40px 40px;
@@ -63,9 +63,7 @@
             letter-spacing: 2px;
         }
 
-        .ui-row:last-child {
-            margin-bottom: 0;
-        }
+        .ui-row:last-child { margin-bottom: 0; }
 
         .bracket {
             display: inline-block;
@@ -77,10 +75,7 @@
             transition: border-color 0.3s ease;
         }
 
-        .label {
-            width: 120px;
-            flex-shrink: 0;
-        }
+        .label { width: 120px; flex-shrink: 0; }
 
         #selected-city, #time-display {
             color: var(--text-highlight);
@@ -88,11 +83,8 @@
             transition: color 0.3s ease, text-shadow 0.3s ease;
         }
 
-        #time-display {
-            font-size: 1.5rem;
-        }
+        #time-display { font-size: 1.5rem; }
 
-        /* Search Input Styling */
         #search-input {
             background: transparent;
             border: none;
@@ -113,11 +105,8 @@
             letter-spacing: 2px;
         }
 
-        #search-input:focus {
-            border-bottom: 2px solid var(--text-highlight);
-        }
+        #search-input:focus { border-bottom: 2px solid var(--text-highlight); }
 
-        /* UI Elements */
         #site-header {
             position: absolute;
             top: 20px;
@@ -189,36 +178,460 @@
             text-align: center;
             pointer-events: none;
             z-index: 10;
+            line-height: 1.6;
+        }
+
+        #hand-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(18, 18, 18, 0.8);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-family: 'Share Tech Mono', monospace;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            z-index: 1001;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        #hand-toggle:hover {
+            background: var(--primary-color);
+            color: #121212;
+            box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5);
+        }
+
+        #demo-toggle {
+            position: absolute;
+            top: 20px;
+            left: 180px;
+            background: rgba(18, 18, 18, 0.8);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-family: 'Share Tech Mono', monospace;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            z-index: 1001;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        #demo-toggle:hover {
+            background: var(--primary-color);
+            color: #121212;
+            box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5);
+        }
+
+        #demo-toggle.active {
+            background: var(--primary-color);
+            color: #121212;
+            box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.8);
+        }
+
+        #cam {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            width: 160px;
+            border: 2px solid var(--primary-color);
+            transform: scaleX(-1);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, border-color 0.3s ease;
+            box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.3);
+        }
+
+        #cam.active { opacity: 0.75; }
+
+        #hand-cursor {
+            position: fixed;
+            width: 36px;
+            height: 36px;
+            border: 2px solid var(--primary-color);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.6);
+            transition: width 0.1s ease, height 0.1s ease, background 0.1s ease;
+        }
+
+        #hand-cursor.pinching {
+            width: 20px;
+            height: 20px;
+            background: rgba(var(--primary-rgb), 0.5);
+        }
+
+        #gesture-guide {
+            position: absolute;
+            top: 70px;
+            left: 20px;
+            background: rgba(18, 18, 18, 0.92);
+            border: 2px solid var(--primary-color);
+            padding: 12px 15px;
+            font-size: 0.78rem;
+            letter-spacing: 1px;
+            z-index: 1001;
+            display: none;
+            max-width: 260px;
+            line-height: 1.6;
+            box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.2);
+        }
+
+        #gesture-guide.active { display: block; }
+
+        #gesture-guide .guide-title {
+            font-size: 0.88rem;
+            color: var(--text-highlight);
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px rgba(var(--primary-rgb), 0.8);
+        }
+
+        #gesture-guide .guide-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            opacity: 0.85;
+        }
+
+        #gesture-guide .guide-icon {
+            display: inline-block;
+            width: 42px;
+            font-size: 0.95rem;
+            color: var(--text-highlight);
+        }
+
+        #gesture-guide .guide-divider {
+            height: 1px;
+            background: var(--primary-color);
+            opacity: 0.3;
+            margin: 10px 0;
+        }
+
+        #gesture-guide .guide-subtitle {
+            font-size: 0.72rem;
+            opacity: 0.7;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .gesture-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .gesture-tile {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 7px;
+            border: 1px solid rgba(var(--primary-rgb), 0.25);
+            border-radius: 3px;
+            background: rgba(var(--primary-rgb), 0.03);
+            transition: all 0.2s ease;
+            cursor: default;
+        }
+
+        .gesture-tile.active {
+            border-color: var(--primary-color);
+            background: rgba(var(--primary-rgb), 0.15);
+            box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.5);
+        }
+
+        .gesture-tile .emoji {
+            font-size: 1.3rem;
+            line-height: 1;
+            filter: grayscale(0.4);
+            transition: filter 0.2s ease;
+        }
+
+        .gesture-tile.active .emoji {
+            filter: grayscale(0) drop-shadow(0 0 6px rgba(var(--primary-rgb), 0.9));
+        }
+
+        .gesture-tile .gt-label {
+            font-size: 0.62rem;
+            letter-spacing: 0.5px;
+            line-height: 1.25;
+            opacity: 0.85;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.18); }
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(-14deg); }
+            75% { transform: rotate(14deg); }
+        }
+
+        @keyframes floatUp {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        @keyframes floatDown {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(6px); }
+        }
+
+        .emoji-anim-fist { animation: pulse 1.6s ease-in-out infinite; display: inline-block; }
+        .emoji-anim-victory { animation: wiggle 1.5s ease-in-out infinite; display: inline-block; }
+        .emoji-anim-up { animation: floatUp 1.6s ease-in-out infinite; display: inline-block; }
+        .emoji-anim-down { animation: floatDown 1.6s ease-in-out infinite; display: inline-block; }
+
+        #speed-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #speed-row .speed-label {
+            font-size: 0.72rem;
+            opacity: 0.85;
+            letter-spacing: 1px;
+            flex-shrink: 0;
+        }
+
+        #speed-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            background: rgba(var(--primary-rgb), 0.25);
+            outline: none;
+            border-radius: 2px;
+            cursor: pointer;
+            min-width: 0;
+        }
+
+        #speed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 6px rgba(var(--primary-rgb), 0.8);
+        }
+
+        #speed-slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 6px rgba(var(--primary-rgb), 0.8);
+        }
+
+        #speed-value {
+            color: var(--text-highlight);
+            font-size: 0.72rem;
+            min-width: 34px;
+            text-align: right;
+            text-shadow: 0 0 5px rgba(var(--primary-rgb), 0.7);
+            flex-shrink: 0;
+        }
+
+        #demo-badge {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(var(--primary-rgb), 0.15);
+            border: 1px solid var(--primary-color);
+            color: var(--text-highlight);
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            z-index: 11;
+            display: none;
+            box-shadow: 0 0 12px rgba(var(--primary-rgb), 0.5);
+            text-shadow: 0 0 5px rgba(var(--primary-rgb), 0.9);
+        }
+
+        #demo-badge.active { display: block; }
+
+        #demo-badge::before {
+            content: "● ";
+            animation: blink 1s infinite;
+        }
+
+        #privacy-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #privacy-overlay.active { display: flex; }
+
+        #privacy-card {
+            background: #121212;
+            border: 2px solid var(--primary-color);
+            padding: 25px 25px 20px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.3);
+            letter-spacing: 1px;
+            line-height: 1.7;
+            font-size: 0.9rem;
+        }
+
+        #privacy-card h2 {
+            margin: 0 0 15px 0;
+            font-size: 1.1rem;
+            color: var(--text-highlight);
+            letter-spacing: 3px;
+            text-shadow: 0 0 8px rgba(var(--primary-rgb), 0.6);
+        }
+
+        #privacy-card ul {
+            margin: 0 0 18px 0;
+            padding-left: 20px;
+        }
+
+        #privacy-card li {
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        #privacy-card .highlight {
+            color: var(--text-highlight);
+            text-shadow: 0 0 5px rgba(var(--primary-rgb), 0.7);
+        }
+
+        #privacy-card button {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-family: 'Share Tech Mono', monospace;
+            padding: 10px 25px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        #privacy-card button:hover {
+            background: var(--primary-color);
+            color: #121212;
+            box-shadow: 0 0 15px rgba(var(--primary-rgb), 0.5);
+        }
+
+        @media (max-width: 700px) {
+            #site-header { font-size: 1.3rem; letter-spacing: 3px; }
+            #ui-container { bottom: 30px; padding: 12px; }
+            .ui-row { font-size: 0.95rem; }
+            .label { width: 85px; font-size: 0.8rem; }
+            #time-display { font-size: 1.15rem; }
+            #search-input { font-size: 0.9rem; }
+            #instructions { font-size: 0.68rem; top: 55px; padding: 0 12px; }
+            #theme-toggle { font-size: 0.65rem; padding: 5px 8px; top: 12px; right: 12px; }
+            #hand-toggle { font-size: 0.65rem; padding: 5px 8px; top: 12px; left: 12px; }
+            #demo-toggle { font-size: 0.65rem; padding: 5px 8px; top: 12px; left: 110px; }
+            #gesture-guide { font-size: 0.68rem; max-width: 200px; padding: 9px 11px; top: 55px; left: 12px; }
+            #gesture-guide .guide-icon { width: 32px; }
+            .gesture-tile .emoji { font-size: 1.1rem; }
+            .gesture-tile .gt-label { font-size: 0.55rem; }
+            #cam { width: 100px; top: 48px; right: 12px; }
+            #demo-badge { font-size: 0.65rem; padding: 3px 9px; top: 48px; }
         }
     </style>
-    <!-- Load Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
     <div id="site-header">TIME88</div>
     <button id="theme-toggle">BLUE THEME</button>
+    <button id="hand-toggle">HAND: OFF</button>
+    <button id="demo-toggle">DEMO</button>
+
+    <div id="demo-badge">DEMO TOUR</div>
+
+    <div id="gesture-guide">
+        <div class="guide-title">GESTURE GUIDE</div>
+
+        <div class="guide-row">
+            <span class="guide-icon">[+]</span>
+            <span>Move open hand to rotate</span>
+        </div>
+        <div class="guide-row">
+            <span class="guide-icon">[o]</span>
+            <span>Pinch to select a city</span>
+        </div>
+
+        <div class="guide-divider"></div>
+        <div class="guide-subtitle">EXTRA GESTURES</div>
+
+        <div class="gesture-grid">
+            <div class="gesture-tile" data-gesture="VICTORY">
+                <span class="emoji emoji-anim-victory">✌️</span>
+                <span class="gt-label">Reset view</span>
+            </div>
+            <div class="gesture-tile" data-gesture="FIST">
+                <span class="emoji emoji-anim-fist">✊</span>
+                <span class="gt-label">Auto-spin on/off</span>
+            </div>
+            <div class="gesture-tile" data-gesture="THUMBS_UP">
+                <span class="emoji emoji-anim-up">👍</span>
+                <span class="gt-label">Zoom in</span>
+            </div>
+            <div class="gesture-tile" data-gesture="THUMBS_DOWN">
+                <span class="emoji emoji-anim-down">👎</span>
+                <span class="gt-label">Zoom out</span>
+            </div>
+        </div>
+
+        <div id="speed-row">
+            <span class="speed-label">SPEED</span>
+            <input type="range" id="speed-slider" min="0.4" max="3" step="0.1" value="1">
+            <span id="speed-value">1.0x</span>
+        </div>
+    </div>
+
     <div id="copyright">mohamed005cheikh@gmail.com | by MC88</div>
-    
-    <div id="instructions">DRAG TO ROTATE • CLICK A NODE TO VIEW TIME</div>
+
+    <div id="instructions">
+        DRAG / MOVE HAND TO ROTATE<br>CLICK OR PINCH TO SELECT
+    </div>
     <div id="loading">INITIALIZING GLOBE...</div>
-    
+
     <div id="canvas-container"></div>
 
+    <video id="cam" autoplay playsinline muted></video>
+    <div id="hand-cursor"></div>
+
     <div id="ui-container">
-        <!-- Search Row -->
         <div class="ui-row">
             <div class="bracket"></div>
             <div class="label">SEARCH:</div>
             <input type="text" id="search-input" placeholder="TYPE CAPITAL NAME & PRESS ENTER..." autocomplete="off">
         </div>
-        <!-- Display Row -->
         <div class="ui-row">
             <div class="bracket"></div>
             <div class="label">EARTH:</div>
             <div id="selected-city">SELECT A CAPITAL</div>
         </div>
-        <!-- Time Row -->
         <div class="ui-row">
             <div class="bracket"></div>
             <div class="label">TIME:</div>
@@ -226,8 +639,21 @@
         </div>
     </div>
 
+    <div id="privacy-overlay">
+        <div id="privacy-card">
+            <h2>YOUR PRIVACY</h2>
+            <ul>
+                <li>Your camera is used <span class="highlight">only on your device</span> to detect hand gestures.</li>
+                <li><span class="highlight">No images are recorded, stored, or sent</span> anywhere.</li>
+                <li>This site has <span class="highlight">no backend server</span>. Everything runs inside your browser.</li>
+                <li>The source code is <span class="highlight">open and readable</span>. You can verify it yourself by viewing the page source.</li>
+            </ul>
+            <button id="privacy-ok">GOT IT</button>
+        </div>
+    </div>
+
     <script>
-        // --- DATA: 195 World Capitals (Lat, Lon, Timezone) ---
+        // List of world capitals with latitude, longitude and timezone
         const capitalsData = [
             ["Kabul", 34.5553, 69.2075, "Asia/Kabul"],
             ["Tirana", 41.3275, 19.8187, "Europe/Tirane"],
@@ -426,12 +852,12 @@
             ["Harare", -17.8252, 31.0335, "Africa/Harare"]
         ];
 
-        // --- SCENE SETUP ---
+        // Set up the 3D scene, camera and renderer
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
-        
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 280;
+        const BASE_ZOOM = 280;
+        camera.position.z = BASE_ZOOM;
 
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -441,29 +867,41 @@
         const globeGroup = new THREE.Group();
         scene.add(globeGroup);
 
-        // Colors
-        let neonGreen = 0x00ff41;
+        const greenColor = 0x00ff41;
 
-        // 1. The Wireframe Globe
+        // Wireframe sphere for the globe
         const globeRadius = 100;
         const sphereGeo = new THREE.SphereGeometry(globeRadius, 36, 36);
-        const sphereMat = new THREE.MeshBasicMaterial({ 
-            color: neonGreen, 
-            wireframe: true, 
-            transparent: true, 
-            opacity: 0.15 
+        const sphereMat = new THREE.MeshBasicMaterial({
+            color: greenColor,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.15
         });
         const globeMesh = new THREE.Mesh(sphereGeo, sphereMat);
         globeGroup.add(globeMesh);
 
-        // Outer bounding grid box
+        // Bounding box around the globe
         const boxSize = 240;
         const boxGeo = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
         const boxEdges = new THREE.EdgesGeometry(boxGeo);
-        const boxLines = new THREE.LineSegments(boxEdges, new THREE.LineBasicMaterial({ color: neonGreen, opacity: 0.3, transparent: true }));
+        const boxLines = new THREE.LineSegments(
+            boxEdges,
+            new THREE.LineBasicMaterial({ color: greenColor, opacity: 0.3, transparent: true })
+        );
         globeGroup.add(boxLines);
 
-        // 2. Add Capitals
+        // Convert latitude and longitude to xyz on the sphere
+        function latLonToXYZ(lat, lon, radius) {
+            const phi = (90 - lat) * (Math.PI / 180);
+            const theta = (lon + 180) * (Math.PI / 180);
+            const x = -(radius * Math.sin(phi) * Math.cos(theta));
+            const y = (radius * Math.cos(phi));
+            const z = (radius * Math.sin(phi) * Math.sin(theta));
+            return { x, y, z };
+        }
+
+        // Add capital dots and invisible hit areas for clicks
         const cityPoints = [];
         const pointGeo = new THREE.SphereGeometry(1.5, 8, 8);
         const pointMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
@@ -472,41 +910,53 @@
 
         capitalsData.forEach((data) => {
             const [name, lat, lon, tz] = data;
-            
-            const phi = (90 - lat) * (Math.PI / 180);
-            const theta = (lon + 180) * (Math.PI / 180);
-            const x = -(globeRadius * Math.sin(phi) * Math.cos(theta));
-            const y = (globeRadius * Math.cos(phi));
-            const z = (globeRadius * Math.sin(phi) * Math.sin(theta));
+            const pos = latLonToXYZ(lat, lon, globeRadius);
 
-            const point = new THREE.Mesh(pointGeo, pointMat);
-            point.position.set(x, y, z);
-            globeGroup.add(point);
+            const dot = new THREE.Mesh(pointGeo, pointMat);
+            dot.position.set(pos.x, pos.y, pos.z);
+            globeGroup.add(dot);
 
-            const hitArea = new THREE.Mesh(hitAreaGeo, hitAreaMat);
-            hitArea.position.set(x, y, z);
-            hitArea.userData = { name, tz };
-            globeGroup.add(hitArea);
-            cityPoints.push(hitArea);
+            const hit = new THREE.Mesh(hitAreaGeo, hitAreaMat);
+            hit.position.set(pos.x, pos.y, pos.z);
+            hit.userData = { name, tz };
+            globeGroup.add(hit);
+            cityPoints.push(hit);
         });
 
         document.getElementById('loading').style.display = 'none';
 
-        // --- INTERACTION ---
+        // Rotation state for the globe
         let isDragging = false;
         let previousMousePosition = { x: 0, y: 0 };
         let clickStartPos = { x: 0, y: 0 };
-        let targetRotation = { x: 0, y: 0 };
-        let currentRotation = { x: 0, y: 0 };
-
-        targetRotation.y = -0.5;
-        targetRotation.x = 0.2;
-        currentRotation.y = -0.5;
-        currentRotation.x = 0.2;
+        let targetRotation = { x: 0.2, y: -0.5 };
+        let currentRotation = { x: 0.2, y: -0.5 };
+        let autoSpin = true;
+        let demoActive = false;
 
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
+        // Compute the rotation needed to bring a city to face the camera
+        function rotationToFaceCity(lat, lon) {
+            const pos = latLonToXYZ(lat, lon, 1);
+            const ry = Math.atan2(-pos.x, pos.z);
+            const zAfter = -pos.x * Math.sin(ry) + pos.z * Math.cos(ry);
+            const rx = Math.atan2(pos.y, zAfter);
+            return { x: rx, y: ry };
+        }
+
+        // Rotate the globe to look at the given city over time
+        function lookAtCity(lat, lon) {
+            const r = rotationToFaceCity(lat, lon);
+            targetRotation.x = Math.max(-Math.PI / 2 + 0.1, Math.min(Math.PI / 2 - 0.1, r.x));
+            let dy = r.y - targetRotation.y;
+            while (dy > Math.PI) dy -= 2 * Math.PI;
+            while (dy < -Math.PI) dy += 2 * Math.PI;
+            targetRotation.y += dy;
+        }
+
+        // Mouse drag handling
         container.addEventListener('mousedown', (e) => {
             isDragging = true;
             previousMousePosition = { x: e.clientX, y: e.clientY };
@@ -515,37 +965,28 @@
 
         window.addEventListener('mousemove', (e) => {
             if (isDragging) {
-                const deltaMove = {
-                    x: e.clientX - previousMousePosition.x,
-                    y: e.clientY - previousMousePosition.y
-                };
-                targetRotation.y += deltaMove.x * 0.005;
-                targetRotation.x += deltaMove.y * 0.005;
+                const dx = e.clientX - previousMousePosition.x;
+                const dy = e.clientY - previousMousePosition.y;
+                targetRotation.y += dx * 0.005;
+                targetRotation.x += dy * 0.005;
                 targetRotation.x = Math.max(-Math.PI / 2 + 0.1, Math.min(Math.PI / 2 - 0.1, targetRotation.x));
                 previousMousePosition = { x: e.clientX, y: e.clientY };
             }
         });
 
         window.addEventListener('mouseup', (e) => {
-            if (isDragging) {
-                isDragging = false;
-                const moveDistance = Math.sqrt(
-                    Math.pow(e.clientX - clickStartPos.x, 2) + 
-                    Math.pow(e.clientY - clickStartPos.y, 2)
-                );
-                if (moveDistance < 5) {
-                    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-                    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-                    raycaster.setFromCamera(mouse, camera);
-                    const intersects = raycaster.intersectObjects(cityPoints);
-                    if (intersects.length > 0) {
-                        const selectedData = intersects[0].object.userData;
-                        selectCity(selectedData.name, selectedData.tz);
-                    }
-                }
+            if (!isDragging) return;
+            isDragging = false;
+            const moveDistance = Math.sqrt(
+                Math.pow(e.clientX - clickStartPos.x, 2) +
+                Math.pow(e.clientY - clickStartPos.y, 2)
+            );
+            if (moveDistance < 5) {
+                pickCityAt(e.clientX, e.clientY);
             }
         });
 
+        // Touch handling for mobile
         container.addEventListener('touchstart', (e) => {
             if (e.touches.length === 1) {
                 isDragging = true;
@@ -556,38 +997,40 @@
 
         window.addEventListener('touchmove', (e) => {
             if (isDragging && e.touches.length === 1) {
-                const deltaMove = {
-                    x: e.touches[0].clientX - previousMousePosition.x,
-                    y: e.touches[0].clientY - previousMousePosition.y
-                };
-                targetRotation.y += deltaMove.x * 0.005;
-                targetRotation.x += deltaMove.y * 0.005;
+                const dx = e.touches[0].clientX - previousMousePosition.x;
+                const dy = e.touches[0].clientY - previousMousePosition.y;
+                targetRotation.y += dx * 0.005;
+                targetRotation.x += dy * 0.005;
                 targetRotation.x = Math.max(-Math.PI / 2 + 0.1, Math.min(Math.PI / 2 - 0.1, targetRotation.x));
                 previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
             }
         });
 
         window.addEventListener('touchend', (e) => {
-            if (isDragging) {
-                isDragging = false;
-                const moveDistance = Math.sqrt(
-                    Math.pow(e.changedTouches[0].clientX - clickStartPos.x, 2) + 
-                    Math.pow(e.changedTouches[0].clientY - clickStartPos.y, 2)
-                );
-                if (moveDistance < 5) {
-                    mouse.x = (e.changedTouches[0].clientX / window.innerWidth) * 2 - 1;
-                    mouse.y = -(e.changedTouches[0].clientY / window.innerHeight) * 2 + 1;
-                    raycaster.setFromCamera(mouse, camera);
-                    const intersects = raycaster.intersectObjects(cityPoints);
-                    if (intersects.length > 0) {
-                        const selectedData = intersects[0].object.userData;
-                        selectCity(selectedData.name, selectedData.tz);
-                    }
-                }
+            if (!isDragging) return;
+            isDragging = false;
+            const moveDistance = Math.sqrt(
+                Math.pow(e.changedTouches[0].clientX - clickStartPos.x, 2) +
+                Math.pow(e.changedTouches[0].clientY - clickStartPos.y, 2)
+            );
+            if (moveDistance < 5) {
+                pickCityAt(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
             }
         });
 
-        // --- TIME LOGIC ---
+        // Raycast to find which city is under the given screen point
+        function pickCityAt(screenX, screenY) {
+            mouse.x = (screenX / window.innerWidth) * 2 - 1;
+            mouse.y = -(screenY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(cityPoints);
+            if (intersects.length > 0) {
+                const data = intersects[0].object.userData;
+                selectCity(data.name, data.tz);
+            }
+        }
+
+        // Clock logic
         let activeTimezone = null;
         const cityDisplay = document.getElementById('selected-city');
         const timeDisplay = document.getElementById('time-display');
@@ -597,7 +1040,6 @@
             activeTimezone = tz;
             cityDisplay.textContent = name.toUpperCase();
             updateTime();
-            // Update search input without triggering focus loss
             if (document.activeElement !== searchInput) {
                 searchInput.value = name;
             }
@@ -605,17 +1047,15 @@
 
         function updateTime() {
             if (!activeTimezone) return;
-            const now = new Date();
-            const options = {
-                timeZone: activeTimezone,
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            };
             try {
-                const formatter = new Intl.DateTimeFormat('en-US', options);
-                timeDisplay.textContent = formatter.format(now);
+                const formatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: activeTimezone,
+                    hour12: false,
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                timeDisplay.textContent = formatter.format(new Date());
             } catch (e) {
                 timeDisplay.textContent = "ERR";
             }
@@ -623,30 +1063,25 @@
 
         setInterval(updateTime, 1000);
 
-        // --- SEARCH LOGIC ---
+        // Search box handling
         searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const query = searchInput.value.trim().toLowerCase();
-                if (!query) return;
-                
-                // Find exact match first, then partial match
-                let match = capitalsData.find(cap => cap[0].toLowerCase() === query);
-                if (!match) {
-                    match = capitalsData.find(cap => cap[0].toLowerCase().includes(query));
-                }
-                
-                if (match) {
-                    selectCity(match[0], match[3]);
-                    searchInput.blur(); // Remove focus to show full UI
-                } else {
-                    cityDisplay.textContent = "NOT FOUND";
-                    timeDisplay.textContent = "--:--:--";
-                    activeTimezone = null;
-                }
+            if (e.key !== 'Enter') return;
+            const query = searchInput.value.trim().toLowerCase();
+            if (!query) return;
+
+            let match = capitalsData.find(c => c[0].toLowerCase() === query);
+            if (!match) match = capitalsData.find(c => c[0].toLowerCase().includes(query));
+
+            if (match) {
+                selectCity(match[0], match[3]);
+                searchInput.blur();
+            } else {
+                cityDisplay.textContent = "NOT FOUND";
+                timeDisplay.textContent = "--:--:--";
+                activeTimezone = null;
             }
         });
 
-        // Clear on focus to allow new search
         searchInput.addEventListener('focus', () => {
             searchInput.value = '';
             cityDisplay.textContent = "SELECT A CAPITAL";
@@ -654,30 +1089,419 @@
             activeTimezone = null;
         });
 
-        // --- THEME LOGIC ---
+        // Theme toggle
         const themeToggle = document.getElementById('theme-toggle');
         themeToggle.addEventListener('click', () => {
             document.body.classList.toggle('blue-theme');
             const isBlue = document.body.classList.contains('blue-theme');
             themeToggle.textContent = isBlue ? 'GREEN THEME' : 'BLUE THEME';
-            
-            // Update Three.js scene colors
             const newColor = isBlue ? 0x00d4ff : 0x00ff41;
             sphereMat.color.setHex(newColor);
             boxLines.material.color.setHex(newColor);
         });
 
-        // --- ANIMATION LOOP ---
+        // Demo tour that cycles through famous cities
+        const demoButton = document.getElementById('demo-toggle');
+        const demoBadge = document.getElementById('demo-badge');
+
+        const demoTour = [
+            'Paris', 'Tokyo', 'New York', 'Cairo', 'Rio de Janeiro',
+            'Sydney', 'Dubai', 'Moscow', 'London', 'Nouakchott'
+        ];
+        const DEMO_HOLD_MS = 4200;
+
+        let demoTimer = null;
+        let demoIndex = 0;
+
+        function stopDemo() {
+            demoActive = false;
+            clearTimeout(demoTimer);
+            demoButton.classList.remove('active');
+            demoBadge.classList.remove('active');
+            demoButton.textContent = 'DEMO';
+        }
+
+        function runDemoStep() {
+            if (!demoActive) return;
+            const name = demoTour[demoIndex];
+            const match = capitalsData.find(c => c[0] === name);
+            if (match) {
+                selectCity(match[0], match[3]);
+                lookAtCity(match[1], match[2]);
+            }
+            demoIndex = (demoIndex + 1) % demoTour.length;
+            demoTimer = setTimeout(runDemoStep, DEMO_HOLD_MS);
+        }
+
+        function startDemo() {
+            stopHand();
+            demoActive = true;
+            demoIndex = 0;
+            camera.position.z = BASE_ZOOM;
+            demoButton.classList.add('active');
+            demoButton.textContent = 'STOP';
+            demoBadge.classList.add('active');
+            runDemoStep();
+        }
+
+        demoButton.addEventListener('click', () => {
+            if (demoActive) stopDemo();
+            else startDemo();
+        });
+
+        // Hand tracking with MediaPipe
+        const handToggleBtn = document.getElementById('hand-toggle');
+        const gestureGuide = document.getElementById('gesture-guide');
+        const privacyOverlay = document.getElementById('privacy-overlay');
+        const privacyOk = document.getElementById('privacy-ok');
+        const camVideo = document.getElementById('cam');
+        const handCursor = document.getElementById('hand-cursor');
+        const speedSlider = document.getElementById('speed-slider');
+        const speedValueLabel = document.getElementById('speed-value');
+        const gestureTiles = document.querySelectorAll('.gesture-tile');
+
+        let handEnabled = false;
+        let handReady = false;
+        let handActive = false;
+        let lastVideoTime = -1;
+        let handLandmarkerRef = null;
+
+        // Smoothing and motion values
+        let smoothedPalmX = null;
+        let smoothedPalmY = null;
+        let prevPalmX = null;
+        let prevPalmY = null;
+        let isPinching = false;
+        let lastPinchTime = 0;
+
+        // Per gesture cooldown tracking
+        const gestureLastTime = {};
+        const gestureHoldCounter = {};
+
+        const BASE_ROTATION_SPEED = 2.8;
+        const PALM_SMOOTHING = 0.22;
+        const DEAD_ZONE = 0.004;
+        const PINCH_THRESHOLD = 0.35;
+        const PINCH_COOLDOWN_MS = 800;
+        const GESTURE_STABLE_FRAMES = 3;
+        const VICTORY_COOLDOWN_MS = 2500;
+        const FIST_COOLDOWN_MS = 1500;
+
+        const privacyShownKey = 'time88_privacy_shown';
+        const speedStorageKey = 'time88_speed_multiplier';
+
+        // Load saved speed setting from previous session
+        let speedMultiplier = parseFloat(localStorage.getItem(speedStorageKey)) || 1;
+        if (isNaN(speedMultiplier) || speedMultiplier < 0.4 || speedMultiplier > 3) {
+            speedMultiplier = 1;
+        }
+        speedSlider.value = speedMultiplier;
+        speedValueLabel.textContent = speedMultiplier.toFixed(1) + 'x';
+
+        speedSlider.addEventListener('input', () => {
+            speedMultiplier = parseFloat(speedSlider.value);
+            speedValueLabel.textContent = speedMultiplier.toFixed(1) + 'x';
+            localStorage.setItem(speedStorageKey, speedMultiplier.toString());
+        });
+
+        function showPrivacyIfNeeded() {
+            if (!localStorage.getItem(privacyShownKey)) {
+                privacyOverlay.classList.add('active');
+            }
+        }
+
+        privacyOk.addEventListener('click', () => {
+            localStorage.setItem(privacyShownKey, '1');
+            privacyOverlay.classList.remove('active');
+        });
+
+        async function initHandTracking() {
+            const { HandLandmarker, FilesetResolver } =
+                await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/+esm');
+
+            const vision = await FilesetResolver.forVisionTasks(
+                'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm'
+            );
+
+            handLandmarkerRef = await HandLandmarker.createFromOptions(vision, {
+                baseOptions: {
+                    modelAssetPath:
+                        'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',
+                    delegate: 'GPU'
+                },
+                runningMode: 'VIDEO',
+                numHands: 1
+            });
+
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { width: 640, height: 480 }
+            });
+            camVideo.srcObject = stream;
+            await camVideo.play();
+
+            handReady = true;
+            runHandLoop();
+        }
+
+        function runHandLoop() {
+            if (handEnabled && handReady && camVideo.readyState >= 2) {
+                if (camVideo.currentTime !== lastVideoTime) {
+                    lastVideoTime = camVideo.currentTime;
+                    const result = handLandmarkerRef.detectForVideo(camVideo, performance.now());
+                    if (result.landmarks && result.landmarks.length > 0) {
+                        processHand(result.landmarks[0]);
+                    } else {
+                        resetHandState();
+                    }
+                }
+            }
+            requestAnimationFrame(runHandLoop);
+        }
+
+        function resetHandState() {
+            handActive = false;
+            prevPalmX = null;
+            prevPalmY = null;
+            smoothedPalmX = null;
+            smoothedPalmY = null;
+            handCursor.style.display = 'none';
+            handCursor.classList.remove('pinching');
+            setActiveGesture(null);
+        }
+
+        // Check if a finger is folded toward the palm
+        function isFolded(hand, tipIdx, mcpIdx) {
+            const wrist = hand[0];
+            const tip = hand[tipIdx];
+            const mcp = hand[mcpIdx];
+            const tipDist = Math.hypot(tip.x - wrist.x, tip.y - wrist.y);
+            const mcpDist = Math.hypot(mcp.x - wrist.x, mcp.y - wrist.y);
+            return tipDist < mcpDist;
+        }
+
+        // Detect which gesture the hand is making
+        function detectGesture(hand, pinchingNow) {
+            if (pinchingNow) return 'PINCH';
+
+            const indexFold = isFolded(hand, 8, 5);
+            const middleFold = isFolded(hand, 12, 9);
+            const ringFold = isFolded(hand, 16, 13);
+            const pinkyFold = isFolded(hand, 20, 17);
+
+            const indexUp = !indexFold;
+            const middleUp = !middleFold;
+            const ringUp = !ringFold;
+            const pinkyUp = !pinkyFold;
+
+            const upCount = [indexUp, middleUp, ringUp, pinkyUp].filter(Boolean).length;
+
+            // Victory: index and middle up, ring and pinky folded
+            if (indexUp && middleUp && ringFold && pinkyFold) return 'VICTORY';
+
+            // Fist: all four fingers folded
+            if (upCount === 0) {
+                const thumbTip = hand[4];
+                const thumbMcp = hand[2];
+                const wrist = hand[0];
+                const thumbDx = thumbTip.x - thumbMcp.x;
+                const thumbDy = thumbTip.y - thumbMcp.y;
+
+                // If thumb is pointing clearly up or down, it is a thumbs gesture
+                if (Math.abs(thumbDy) > Math.abs(thumbDx) * 1.25) {
+                    if (thumbTip.y < wrist.y - 0.1) return 'THUMBS_UP';
+                    if (thumbTip.y > wrist.y + 0.1) return 'THUMBS_DOWN';
+                }
+                return 'FIST';
+            }
+
+            return null;
+        }
+
+        // Highlight the current gesture in the guide
+        function setActiveGesture(name) {
+            gestureTiles.forEach(tile => {
+                tile.classList.toggle('active', tile.dataset.gesture === name);
+            });
+        }
+
+        // Trigger an action when a gesture stays stable for a few frames
+        function gestureStable(name) {
+            if (!gestureHoldCounter[name]) gestureHoldCounter[name] = 0;
+            gestureHoldCounter[name]++;
+            return gestureHoldCounter[name] >= GESTURE_STABLE_FRAMES;
+        }
+
+        function clearGestureHolders(except) {
+            Object.keys(gestureHoldCounter).forEach(k => {
+                if (k !== except) gestureHoldCounter[k] = 0;
+            });
+        }
+
+        function processHand(hand) {
+            handActive = true;
+
+            const palm = hand[9];
+            const rawX = 1 - palm.x;
+            const rawY = palm.y;
+
+            if (smoothedPalmX === null) {
+                smoothedPalmX = rawX;
+                smoothedPalmY = rawY;
+            } else {
+                smoothedPalmX += (rawX - smoothedPalmX) * PALM_SMOOTHING;
+                smoothedPalmY += (rawY - smoothedPalmY) * PALM_SMOOTHING;
+            }
+
+            const indexTip = hand[8];
+            const cursorX = (1 - indexTip.x) * window.innerWidth;
+            const cursorY = indexTip.y * window.innerHeight;
+
+            const thumbTip = hand[4];
+            const dxp = indexTip.x - thumbTip.x;
+            const dyp = indexTip.y - thumbTip.y;
+            const dzp = (indexTip.z || 0) - (thumbTip.z || 0);
+            const pinchDist = Math.sqrt(dxp * dxp + dyp * dyp + dzp * dzp);
+
+            const wrist = hand[0];
+            const midMcp = hand[9];
+            const hx = wrist.x - midMcp.x;
+            const hy = wrist.y - midMcp.y;
+            const handSize = Math.sqrt(hx * hx + hy * hy) || 0.001;
+            const pinchRatio = pinchDist / handSize;
+            const pinchingNow = pinchRatio < PINCH_THRESHOLD;
+
+            const gesture = detectGesture(hand, pinchingNow);
+            setActiveGesture(gesture);
+            clearGestureHolders(gesture);
+
+            const now = performance.now();
+            const gLast = gestureLastTime[gesture] || 0;
+
+            // Reset view
+            if (gesture === 'VICTORY' && gestureStable('VICTORY') && now - gLast > VICTORY_COOLDOWN_MS) {
+                gestureLastTime.VICTORY = now;
+                targetRotation.x = 0.2;
+                targetRotation.y = -0.5;
+                currentRotation.x = 0.2;
+                currentRotation.y = -0.5;
+                camera.position.z = BASE_ZOOM;
+            }
+
+            // Toggle auto spin
+            if (gesture === 'FIST' && gestureStable('FIST') && now - gLast > FIST_COOLDOWN_MS) {
+                gestureLastTime.FIST = now;
+                autoSpin = !autoSpin;
+            }
+
+            // Zoom in while thumb is up
+            if (gesture === 'THUMBS_UP' && gestureStable('THUMBS_UP')) {
+                camera.position.z = Math.max(170, camera.position.z - 3);
+            }
+
+            // Zoom out while thumb is down
+            if (gesture === 'THUMBS_DOWN' && gestureStable('THUMBS_DOWN')) {
+                camera.position.z = Math.min(420, camera.position.z + 3);
+            }
+
+            // Rotate with palm motion, unless pinching or making a gesture
+            const rotationBlocked = pinchingNow || gesture !== null;
+            if (!rotationBlocked && prevPalmX !== null) {
+                const dx = smoothedPalmX - prevPalmX;
+                const dy = smoothedPalmY - prevPalmY;
+                const currentSpeed = BASE_ROTATION_SPEED * speedMultiplier;
+
+                if (Math.abs(dx) > DEAD_ZONE) {
+                    targetRotation.y += (dx - Math.sign(dx) * DEAD_ZONE) * currentSpeed;
+                }
+                if (Math.abs(dy) > DEAD_ZONE) {
+                    targetRotation.x += (dy - Math.sign(dy) * DEAD_ZONE) * currentSpeed;
+                }
+                targetRotation.x = Math.max(
+                    -Math.PI / 2 + 0.1,
+                    Math.min(Math.PI / 2 - 0.1, targetRotation.x)
+                );
+            }
+
+            prevPalmX = smoothedPalmX;
+            prevPalmY = smoothedPalmY;
+
+            // Cursor display and pinch feedback
+            handCursor.style.display = 'block';
+            handCursor.style.left = cursorX + 'px';
+            handCursor.style.top = cursorY + 'px';
+            if (pinchingNow) handCursor.classList.add('pinching');
+            else handCursor.classList.remove('pinching');
+
+            // Pinch selects the city the index finger points at
+            if (pinchingNow && !isPinching && now - lastPinchTime > PINCH_COOLDOWN_MS) {
+                isPinching = true;
+                lastPinchTime = now;
+
+                const ndcX = (cursorX / window.innerWidth) * 2 - 1;
+                const ndcY = -(cursorY / window.innerHeight) * 2 + 1;
+                mouse.set(ndcX, ndcY);
+                raycaster.setFromCamera(mouse, camera);
+
+                const intersects = raycaster.intersectObjects(cityPoints);
+                if (intersects.length > 0) {
+                    const data = intersects[0].object.userData;
+                    selectCity(data.name, data.tz);
+                    handCursor.style.width = '60px';
+                    handCursor.style.height = '60px';
+                    setTimeout(() => {
+                        handCursor.style.width = '20px';
+                        handCursor.style.height = '20px';
+                    }, 150);
+                }
+            }
+
+            if (!pinchingNow) isPinching = false;
+        }
+
+        function stopHand() {
+            if (!handEnabled) return;
+            handEnabled = false;
+            resetHandState();
+            camVideo.classList.remove('active');
+            gestureGuide.classList.remove('active');
+            handToggleBtn.textContent = 'HAND: OFF';
+        }
+
+        handToggleBtn.addEventListener('click', async () => {
+            if (!handEnabled) {
+                if (demoActive) stopDemo();
+                showPrivacyIfNeeded();
+                handToggleBtn.textContent = 'HAND: LOADING...';
+                try {
+                    if (!handReady) await initHandTracking();
+                    handEnabled = true;
+                    camVideo.classList.add('active');
+                    gestureGuide.classList.add('active');
+                    handToggleBtn.textContent = 'HAND: ON';
+                } catch (err) {
+                    console.error(err);
+                    handToggleBtn.textContent = 'HAND: ERR';
+                    handEnabled = false;
+                }
+            } else {
+                stopHand();
+            }
+        });
+
+        // Main animation loop
         function animate() {
             requestAnimationFrame(animate);
+
             currentRotation.x += (targetRotation.x - currentRotation.x) * 0.1;
             currentRotation.y += (targetRotation.y - currentRotation.y) * 0.1;
             globeGroup.rotation.x = currentRotation.x;
             globeGroup.rotation.y = currentRotation.y;
 
-            if (!isDragging) {
+            // Auto spin only when idle and enabled
+            if (!isDragging && !handActive && !demoActive && autoSpin) {
                 targetRotation.y += 0.0005;
             }
+
             renderer.render(scene, camera);
         }
 
