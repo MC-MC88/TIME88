@@ -1,154 +1,197 @@
+<h2 id="français">🇫🇷 Version française</h2>
+
 <div align="center">
 
-🌍 Time88
+# 🎯 Time88 — MC88
 
-Le monde entier, sur un globe wireframe vert néon.
+**Carte du monde 3D avec heures des capitales**
 
+</div>
+
+🌍 **Langues :** [Français](#français) · [English](#english)
+
+---
+
+> **En bref** — Time88 affiche une carte du monde en 3D. Vous voyez l'heure locale de chaque capitale.
+> 
+> **Globe interactif · Plus de 190 capitales · Contrôle à la main**
+
+<!-- 
+## 📸 Aperçu
+
+<div align="center">
+  <img src="https://github.com/mohamed005cheikh-rgb/[REPO]/raw/main/images/Sc1.png" alt="[Description]" width="100%" />
 </div>
 
 ---
 
-👋 Welcome
-
-I've been fascinated by world clocks since I was a kid. My grandfather had one of those wooden ones on the wall — a dial with a dozen little cities etched around the rim, London, New York, Tokyo, each one with its own tiny hand, and I used to stand in front of it and try to figure out what time it was for my uncle in Senegal.
-
-Modern world-clock apps, somehow, made that less interesting. A list of cities in a table. A dropdown. A little pill-shaped row of times that updates once a minute. Functionally fine, emotionally dead.
-
-Time88 is my attempt to make it interesting again.
-
-It's a wireframe globe, drawn in Three.js, floating on a dark grid like something out of an old science terminal. Neon green by default — the shade that used to glow on CRT monitors when the world felt like it was still about to become cyberspace. Around that wireframe sphere, 195 capital cities sit as small white points, each one exactly where it belongs on the planet.
-
-You can drag the globe to spin it, and it keeps slowly rotating on its own when you let go. You can click any capital, and the panel at the bottom tells you what time it is there, right now, updating every second. Or if you'd rather not spin the globe to find Nouakchott, you can just type its name into the search field, press Enter, and it takes you there.
-
-That's the whole app. A globe, a clock, and two colors of neon.
-
----
-
-<!--
-## 📸 Look Inside
-
-<br />
-
-<div align="center">
-  <img src="https://github.com/mohamed005cheikh-rgb/time88/raw/main/images/preview-1.png" alt="The wireframe globe with neon green theme" width="100%" />
-  <br />
-  <sub><b>① The globe, in green</b></sub>
-</div>
-
-<br />
-<br />
-
-<div align="center">
-  <img src="https://github.com/mohamed005cheikh-rgb/time88/raw/main/images/preview-2.png" alt="The blue theme with a city selected" width="100%" />
-  <br />
-  <sub><b>② Blue theme, city selected</b></sub>
-</div>
-
-<br />
-<br />
-
-<div align="center">
-  <img src="https://github.com/mohamed005cheikh-rgb/time88/raw/main/images/preview-3.png" alt="Searching for a capital" width="100%" />
-  <br />
-  <sub><b>③ Searching for a capital</b></sub>
-</div>
+🔗 **Démo en ligne :** [https://...](https://...)
+📦 **Code source :** [https://github.com/mohamed005cheikh-rgb/[REPO]](https://github.com/mohamed005cheikh-rgb/[REPO])
 -->
 
----
+## 👋 Bienvenue
 
-✨ What you'll find
-
-A wireframe globe you can actually spin.
-The Earth is drawn as a low-opacity wireframe sphere with a thin green cube around it — an axis-aligned bounding box, like a piece of geometry you'd see in a CAD program. Drag anywhere on the screen and the globe rotates with your finger or your mouse. Let go, and it drifts back into a slow, gentle auto-rotation. The motion has easing, so nothing snaps. It feels like a physical object on a stand.
-
-195 capitals, each in its exact place.
-Every country's seat of government is on the globe, converted from latitude and longitude into 3D coordinates and pinned as a small white dot. It's not a curated list of a dozen famous cities — it's the whole world. Nouakchott, Ulaanbaatar, Funafuti, Yaren, Apia, Bissau. All of them, sitting quietly on the wireframe, waiting for you to find them.
-
-Click any capital and the clock starts.
-Tap a white point on the globe, and the panel at the bottom fills in: the city's name in white with a soft neon glow, and beneath it, a live clock ticking every second in that city's local time. Change to a different city and the clock switches to the new timezone immediately, no reload. It uses the browser's built-in Intl.DateTimeFormat, which means daylight saving is handled correctly, and every timezone in the list is real.
-
-Search for anywhere, by name.
-There's an input field at the top of the panel: "TYPE CAPITAL NAME & PRESS ENTER..." Type Paris or Tokyo or Dakar and press Enter. If the name matches a capital, the globe snaps the selection to that city and starts the clock. Exact matches win, then partial matches — so washington finds Washington D.C., and sri finds Sri Jayawardenepura Kotte. If nothing matches, the panel says NOT FOUND and moves on. No apology, no suggestions, no dropdown.
-
-Two themes — the green of a terminal, and its opposite.
-The default is the classic phosphor-green of a 1980s terminal: #00ff41, with a faint grid of the same color behind everything. Click BLUE THEME in the top-right and the whole app shifts to a cooler cyan #00d4ff — the globe, the panel, the borders, the text glow, all of it. The button label flips to GREEN THEME to switch back. The choice is not saved; each visit starts green, like a fresh boot.
-
-A terminal panel at the bottom.
-Three rows, each marked with a hollow square bracket. SEARCH at the top, EARTH in the middle for the current city's name, TIME at the bottom for the live clock. It sits on a translucent dark rectangle with a green border and a soft glow, and it doesn't move or animate. It's just there, at the bottom of the screen, quietly doing its job.
-
-The globe autospins when you're not touching it.
-The moment you release the mouse, a small amount of rotation is added to the target angle every frame — about a quarter-degree per second. Fast enough that you notice the movement, slow enough that it never becomes a distraction. It's the kind of detail that makes the whole thing feel alive rather than static.
-
-Touch, on a phone.
-The globe responds to touch exactly the same way as it does to the mouse. One finger to drag, tap to select. The hit detection uses Three.js raycasting with an oversized invisible hit area around each point, so you don't need pixel-perfect aim to select a city on a small screen. It's forgiving in the right way.
+Time88 est une page web qui montre une carte du monde en 3D. Vous cliquez sur une capitale pour voir son heure locale. La page fonctionne dans le navigateur. Aucune installation, aucun compte. Vous pouvez aussi activer la caméra pour tourner le globe avec la main.
 
 ---
 
-🧭 How it works
+## ✨ Ce que vous trouverez
 
-1. Open the file.
-One HTML file. The globe loads in a moment, the panel appears at the bottom, and the auto-rotation begins. That's the whole startup.
+**Globe 3D interactif.**  
+Tournez avec la souris ou le doigt. Le globe tourne librement dans toutes les directions. Chaque capitale est marquée d'un point blanc.
 
-2. Spin the globe, or click a point.
-Drag anywhere on the screen to rotate the Earth. The panel updates as you click a white dot — the city name and its current local time appear in the EARTH and TIME rows.
+**Plus de 190 capitales.**  
+Toutes les capitales du monde sont incluses. Chaque point porte le nom et le fuseau horaire de la ville. L'heure se met à jour chaque seconde.
 
-3. Or search for a city by name.
-Type a capital name into the search field. Press Enter. The clock starts for that city, immediately. If the name isn't in the list, the panel returns NOT FOUND.
+**Recherche par nom.**  
+Tapez le nom d'une capitale et appuyez sur Entrée. Le globe tourne automatiquement pour la montrer. L'heure apparaît dans le panneau du bas.
 
-4. Watch the clock, or come back later.
-The time updates every second while the tab is open. When you close it, the app forgets everything — no localStorage, no saved city, no history. Each visit is a fresh look at the world, starting from a gentle default rotation and the green theme.
+**Contrôle par gestes de la main.**  
+Activez la caméra pour utiliser les gestes. Déplacez la paume pour tourner. Pincez pour sélectionner une ville. D'autres gestes règlent le zoom et la rotation.
 
-5. Switch to blue, if you want.
-Click BLUE THEME in the top-right. The entire scene — including the Three.js materials — recolors to cyan. Click again to go back to green. Neither is saved.
+**Visite automatique.**  
+Le mode DEMO enchaîne dix grandes villes. Chaque ville reste affichée quelques secondes. Idéal pour une présentation ou une démonstration.
 
 ---
 
-🛠️ A few small helps
+## 🧭 Comment ça marche
 
-"Why doesn't my city show up when I search?"
-The list contains capitals only, not every city. Nouakchott is there, but Nouadhibou isn't. Washington D.C. is there, but New York isn't. If the city you're looking for isn't a capital, it won't be found — that's a deliberate limit, so the globe doesn't become a wall of points.
+**1. Ouvrir la page.**  
+Le globe se charge automatiquement. Aucun clic nécessaire pour démarrer.
 
-"Some capitals are missing — like La Paz or Amsterdam."
-A few countries have multiple capitals, contested capitals, or capitals that are more ceremonial than administrative. This list tries to be inclusive but follows a common convention: the seat of government. Bolivia shows as Sucre (constitutional capital), the Netherlands as Amsterdam (official capital), even though The Hague is where the government actually sits. If you disagree with a choice, the data is a plain array at the top of the script — edit it.
+**2. Chercher ou cliquer.**  
+Tapez une capitale dans la barre de recherche, ou cliquez directement sur un point.
 
-"The time is wrong for one city."
-The times come from the browser's own timezone database via Intl.DateTimeFormat, so if a country recently changed its DST rules and your browser is out of date, the time will be off by an hour until you update. Some entries also use a proxy timezone — for example, Astana uses Asia/Almaty because the IANA database changed the canonical zone after the capital was renamed. These are honest, deliberate compromises, not bugs.
+**3. Lire l'heure.**  
+Le panneau du bas affiche le nom de la ville et son heure locale.
 
-"The globe doesn't auto-rotate on my phone."
-It should. The auto-rotation runs in the animate() loop, which is always active. If the globe feels stuck, try a slightly longer drag — the animation restarts after you let go, and the initial frame after a touch can feel sluggish on older devices.
+**4. Activer les gestes.**  
+Cliquez sur HAND pour utiliser la caméra. Un guide s'affiche à gauche.
 
-"Why does the search field clear when I click it?"
-So you can type a new city without having to select-and-delete the old one first. The moment the field gets focus, it empties itself and the panel resets to SELECT A CAPITAL. If you click away without pressing Enter, nothing changes.
+C'est tout. La page reste ouverte, l'heure continue à se mettre à jour.
 
-"Can I save my favorite city?"
-Not in this version. There's no localStorage, no bookmarking, no recent list. The design intent is that you open it, find what you want, and close it — like glancing at a physical globe on a shelf, not opening a weather app you'll come back to. If you want a persistent world clock, that's a different tool.
+---
 
-"The theme resets to green every time."
-Correct, and it's deliberate. The green theme is the identity of the app — the phosphor terminal look. The blue is an alternate you can try, but each new visit starts fresh at green so the app always feels like itself.
+## 🛠️ Petits coups de main
 
-"Does it work offline?"
-Almost. The HTML file itself is entirely self-contained, but Three.js is loaded from a CDN (cdnjs.cloudflare.com). If you're offline when you open the file, the globe won't render — you'll see the panel and the header, but no 3D scene. Download three.min.js and change the <script src=...> line to point at the local copy, and it works fully offline.
+**La caméra ne s'active pas.**  
+Autorisez l'accès dans les paramètres du navigateur. Sur Brave, cliquez sur l'icône du lion.
 
-"Why are some capital names spelled in English and others with accents?"
-Names are in English with standard accents preserved where they exist in the common English form — Bogotá, São Tomé, Malé, Yaoundé. Apostrophes in names like N'Djamena, Saint John's, and Nuku'alofa are kept as typed. The search is case-insensitive and ignores accents only in that it matches the exact stored string. If you can't find a city, try typing just the first few letters — partial matching is supported.
+**Un pays n'est pas dans la liste.**  
+La liste contient les capitales officielles. Certaines villes ne sont pas incluses.
 
-"Can I add more cities?"
-Yes. Near the top of the <script> there's a capitalsData array. Each entry is [name, latitude, longitude, timezone]. Add your own, and the globe rebuilds itself on next load. The timezone must be a valid IANA zone (like Europe/Paris or Africa/Nouakchott).
+**Le globe tourne trop vite.**  
+Utilisez le curseur SPEED dans le guide des gestes. Vous pouvez ralentir jusqu'à 0,4x.
+
+**Rien ne s'affiche.**  
+Vérifiez votre connexion internet. Three.js se charge depuis un CDN.
+
+---
+
+<br /><br /><br />
+
+<h2 id="english">🇬🇧 English version</h2>
+
+<div align="center">
+
+# 🎯 Time88 — MC88
+
+**3D world map with capital city times**
+
+</div>
+
+🌍 **Languages:** [Français](#français) · [English](#english)
+
+---
+
+> **In short** — Time88 shows a 3D world map. You see the local time of each capital city.
+> 
+> **Interactive globe · 190+ capitals · Hand control**
+
+<!-- 
+## 📸 Preview
+
+<div align="center">
+  <img src="https://github.com/mohamed005cheikh-rgb/[REPO]/raw/main/images/Sc1.png" alt="[Description]" width="100%" />
+</div>
+
+---
+
+🔗 **Live demo:** [https://...](https://...)
+📦 **Source code:** [https://github.com/mohamed005cheikh-rgb/[REPO]](https://github.com/mohamed005cheikh-rgb/[REPO])
+-->
+
+## 👋 Welcome
+
+Time88 is a web page that shows a 3D world map. Click a capital city to see its local time. It runs in the browser. No installation, no account. You can also turn on the camera to spin the globe with your hand.
+
+---
+
+## ✨ What you'll find
+
+**Interactive 3D globe.**  
+Rotate with your mouse or finger. The globe spins freely in every direction. Each capital is marked with a white dot.
+
+**190+ capital cities.**  
+Every capital in the world is included. Each dot carries the city name and timezone. The clock updates every second.
+
+**Search by name.**  
+Type a capital name and press Enter. The globe rotates to face it. The time appears in the bottom panel.
+
+**Hand gesture control.**  
+Turn on the camera to use hand gestures. Move your open palm to rotate. Pinch to select a city. Other gestures control zoom and spin.
+
+**Automatic tour.**  
+Demo mode cycles through ten major cities. Each city stays on screen for a few seconds. Useful for a presentation or demo.
+
+---
+
+## 🧭 How it works
+
+**1. Open the page.**  
+The globe loads automatically. No click needed to start.
+
+**2. Search or click.**  
+Type a capital in the search bar, or click a dot directly.
+
+**3. Read the time.**  
+The bottom panel shows the city name and its local time.
+
+**4. Enable gestures.**  
+Click HAND to use the camera. A guide appears on the left.
+
+That's it. The page stays open and the clock keeps ticking.
+
+---
+
+## 🛠️ A little help
+
+**The camera does not turn on.**  
+Allow access in your browser settings. On Brave, click the lion icon.
+
+**A country is not in the list.**  
+The list only contains official capitals. Some cities are not included.
+
+**The globe spins too fast.**  
+Use the SPEED slider in the gesture guide. You can slow it down to 0.4x.
+
+**Nothing shows up.**  
+Check your internet connection. Three.js loads from a CDN.
 
 ---
 
 <div align="center">
 
-📞 A question, an idea, a bug?
+### 📞 Une question, une idée ? / A question, an idea?
 
-https://img.shields.io/badge/Email-mohamed005cheikh@gmail.com-d14836?style=flat-square&logo=gmail&logoColor=white
-https://img.shields.io/badge/WhatsApp-+222_30_73_64_75-25D366?style=flat-square&logo=whatsapp&logoColor=white
-https://img.shields.io/badge/GitHub-mohamed005cheikh--rgb-181717?style=flat-square&logo=github
+[![Email](https://img.shields.io/badge/Email-mohamed005cheikh@gmail.com-d14836?style=flat-square&logo=gmail&logoColor=white)](mailto:mohamed005cheikh@gmail.com)
+[![WhatsApp](https://img.shields.io/badge/WhatsApp-+222_30_72_64_75-25D366?style=flat-square&logo=whatsapp&logoColor=white)](https://wa.me/22230726475)
+[![GitHub](https://img.shields.io/badge/GitHub-MC--MC88-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/MC-MC88)
 
 <br />
 
-The whole world, one wireframe at a time.
+*Le monde en main / World in hand*
 
-<sub>© 2026 Mohamed Cheikh — MC88</sub>
+<sub>MIT License · © 2026 Mohamed Cheikh — MC88</sub>
 
 </div>
